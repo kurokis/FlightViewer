@@ -34,8 +34,37 @@ app.on('ready', function() {
   });
 });
 
-// Open File
+
+
+
+// Open new window
 exports.openWindow = () =>{
-  let win = new BrowserWindow({width:400, height:200});
+  let win = new BrowserWindow({width:400, height:200, 'node-integration': false});
   win.loadURL('file://'+__dirname+'/bear.html');
+}
+
+// Example:
+// <script>
+//   var main = require("remote").require("./main");
+//   main.getTimestamp();
+// </script>
+
+exports.getTimestamp = () =>{
+  return global.sharedObject.timestamp;
+}
+
+exports.getX= () =>{
+  return global.sharedObject.x;
+}
+
+exports.transpose = function(matrix){
+  return Object.keys(matrix[0])
+      .map(colNumber => matrix.map(rowNumber => rowNumber[colNumber]));
+}
+
+// Global variables
+global.sharedObject = {
+  filecontents: 'None',
+  timestamp: null,
+  x: null
 }

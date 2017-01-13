@@ -12,16 +12,16 @@
   <script src="./lib/three.min.js"></script>
   <script src="./lib/TrackballControls.js"></script>
 
+  <!-- load jQuery -->
+  <!-- http://tech.sanwasystem.com/entry/2015/05/29/225731 -->
+  <script src="./lib/jquery-3.1.1.min.js"></script>
+  <script src="jquery_after.js"></script>
+
   <!-- <script type="text/javascript" src="./assets/lib/jquery/dist/jquery.min.js"></script> -->
-  <script>var $ = jQuery = require("./lib/jquery-3.1.1.min.js");</script>
-  <!--
-  <style>
-    #modelviewer {
-      width: 600px;
-      height: 400px;
-    }
-  </style>
-  -->
+  <!-- <script>var $ = jQuery = require("./lib/jquery-3.1.1.min.js");</script> -->
+
+  <script src="./lib/jquery.flot.js"></script>
+
 </head>
 <body class="application">
 
@@ -57,7 +57,7 @@
           </li>
           <li><p class="navbar-text" id="fileName">(no file selected)</p></li>
           <li>
-            <button type="button" class="btn btn-default btn-spacing navbar-btn ">Analyze</button>
+            <button type="button" class="btn btn-default btn-spacing navbar-btn " id="analyze">Analyze</button>
           </li>
         </ul>
       </div>
@@ -65,7 +65,6 @@
   </div>
 
   <div class="container-fluid">
-
     <div class="row">
       <div class="col-sm-6">
         <div class="chart-wrapper">
@@ -97,14 +96,14 @@
 
     </div>
 
-    <div class="row">
+    <div class="row" >
       <div class="col-sm-6">
         <div class="chart-wrapper">
           <div class="chart-title">
             Cell Title
           </div>
           <div class="chart-stage">
-            <img data-src="holder.js/100%x240/white">
+            <div id="FlotDemo01" class="Flot-demo" style="height:300px;"></div>
           </div>
           <div class="chart-notes">
             Notes about this chart
@@ -117,7 +116,7 @@
             Cell Title
           </div>
           <div class="chart-stage">
-            <img data-src="holder.js/100%x240/white">
+            <div id="placeholder1" style="height:300px;"></div>
           </div>
           <div class="chart-notes">
             Notes about this chart
@@ -133,8 +132,11 @@
           <div class="chart-title">
             Cell Title
           </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
+          <div class="chart-stage" id="globaltextbox">
+            <script>
+              var t = require('electron').remote.getGlobal('sharedObject').filecontents;
+              $('#globaltextbox').text(t);
+            </script>
           </div>
           <div class="chart-notes">
             Notes about this chart
@@ -186,7 +188,7 @@
 
     <hr>
 
-    <p class="small text-muted">Built with &#9829; by <a href="https://keen.io">Keen IO</a></p>
+    <!-- <p class="small text-muted">Built with &#9829; by <a href="https://keen.io">Keen IO</a></p> -->
 
   </div>
 
@@ -206,6 +208,9 @@
 
   <!-- script to handle file read process -->
   <script>require('./readfile.js')</script>
+
+  <!-- script to plot data -->
+  <script>require('./plottimeseries.js')</script>
 
 </body>
 </html>
