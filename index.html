@@ -1,216 +1,223 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <title>UI Test</title>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
-  <link rel="stylesheet" type="text/css" href="./assets/lib/bootstrap/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" type="text/css" href="./assets/css/keen-dashboards.css" />
 
-  <link rel="stylesheet" type="text/css" href="./style.css" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <!-- include necessary APIs -->
-  <script src="./lib/three.min.js"></script>
-  <script src="./lib/TrackballControls.js"></script>
+    <title>Flight Viewer</title>
 
-  <!-- load jQuery -->
-  <!-- http://tech.sanwasystem.com/entry/2015/05/29/225731 -->
-  <script src="./lib/jquery-3.1.1.min.js"></script>
-  <script src="jquery_after.js"></script>
+    <!-- Bootstrap Core CSS -->
+    <link href="./SBAdmin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- <script type="text/javascript" src="./assets/lib/jquery/dist/jquery.min.js"></script> -->
-  <!-- <script>var $ = jQuery = require("./lib/jquery-3.1.1.min.js");</script> -->
+    <!-- MetisMenu CSS -->
+    <link href="./SBAdmin/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
-  <script src="./lib/jquery.flot.js"></script>
+    <!-- Custom CSS -->
+    <link href="./SBAdmin/dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="./SBAdmin/vendor/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="./SBAdmin/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
 </head>
-<body class="application">
 
-  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">UI Test</a>
-      </div>
-      <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-          <li class="dropdown">
-            <button class="btn btn-default btn-spacing dropdown-toggle navbar-btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              Aircraft Type
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-              <li><a href="#">DJI</a></li>
-              <li role="separator" class="divider"></li>
-              <li><a href="#">UT Small Quad</a></li>
-              <li><a href="#">UT Large Quad</a></li>
-              <li role="separator" class="divider"></li>
-              <li><a href="#">Custom</a></li>
-            </ul>
-          </li>
-          <li>
-            <button type="button" id="fileSelect" class="btn btn-default btn-spacing navbar-btn ">Select File</button>
-          </li>
-          <li><p class="navbar-text" id="fileName">(no file selected)</p></li>
-          <li>
-            <button type="button" class="btn btn-default btn-spacing navbar-btn " id="analyze">Analyze</button>
-          </li>
-        </ul>
-      </div>
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand">Flight Viewer</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li class="dropdown">
+                  <button class="btn btn-default btn-spacing dropdown-toggle navbar-btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Aircraft Type
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="#">DJI</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">UT Small Quad</a></li>
+                    <li><a href="#">UT Large Quad</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">Custom</a></li>
+                  </ul>
+                </li>
+                <!-- /.dropdown -->
+                <li>
+                  <button type="button" id="fileSelect" class="btn btn-default btn-spacing navbar-btn ">Select File</button>
+                </li>
+                <li><p class="navbar-text" id="fileName">(no file selected)</p></li>
+                <li>
+                  <button type="button" class="btn btn-default btn-spacing navbar-btn " id="analyze">Analyze</button>
+                </li>
+              </ul>
+              <!-- /.navbar-nav -->
+            </div>
+            <!-- navbar-collapse -->
+          </div>
+          <!-- /.container-fluid -->
+
+          <div class="navbar-default sidebar" role="navigation">
+              <div class="sidebar-nav navbar-collapse">
+                  <ul class="nav" id="side-menu">
+                      <li class="sidebar-search">
+                          <div class="input-group custom-search-form">
+                              <input type="text" class="form-control" placeholder="Search...">
+                              <span class="input-group-btn">
+                              <button class="btn btn-default" type="button">
+                                  <i class="fa fa-search"></i>
+                              </button>
+                          </span>
+                          </div>
+                          <!-- /input-group -->
+                      </li>
+                      <li>
+                          <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                      </li>
+                      <li>
+                          <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
+                          <ul class="nav nav-second-level">
+                              <li>
+                                  <a href="flot.html">Flot Charts</a>
+                              </li>
+                              <li>
+                                  <a href="morris.html">Morris.js Charts</a>
+                              </li>
+                          </ul>
+                          <!-- /.nav-second-level -->
+                      </li>
+                  </ul>
+              </div>
+              <!-- /.sidebar-collapse -->
+          </div>
+          <!-- /.navbar-static-side -->
+        </nav>
+
+        <!-- Main Page -->
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Dashboard</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                      JSON Model Viewer
+                    </div>
+                    <div class="panel-body">
+                        <div id="modelviewer"></div>
+                    </div>
+                    <div class="panel-footer">
+                      Notes about this chart
+                    </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    Contents of the selected file
+                  </div>
+                  <div class="panel-body">
+                      <p id="filetext" style="word-wrap: break-word;">(file not selected)</p>
+                  </div>
+                  <div class="panel-footer">
+                    Notes about this chart
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.row -->
+
+            <div class="row" >
+              <div class="col-sm-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    Flot Demo
+                  </div>
+                  <div class="panel-body">
+                    <div id="FlotDemo01" class="Flot-demo" style="height:300px;"></div>
+                  </div>
+                  <div class="panel-footer">
+                    Notes about this chart
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    Cell Title
+                  </div>
+                  <div class="panel-body">
+                    <div id="placeholder1" style="height:300px;"></div>
+                  </div>
+                  <div class="panel-footer">
+                    Notes about this chart
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.row -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
     </div>
-  </div>
+    <!-- /#wrapper -->
 
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-6">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            JSON Model Viewer
-          </div>
-          <div class="chart-stage">
-              <div id="modelviewer"></div>
-          </div>
-          <div class="chart-notes">
-            Notes about this chart
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Contents of the selected file
-          </div>
-          <div class="chart-stage">
-              <div id="filetext">(file not selected)</div>
-          </div>
-          <div class="chart-notes">
-            Notes about this chart
-          </div>
-        </div>
-      </div>
+    <!-- jQuery -->
+    <script src="./SBAdmin/vendor/jquery/jquery.min.js"></script>
+    <script src="jquery_after.js"></script>
 
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./SBAdmin/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    </div>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="./SBAdmin/vendor/metisMenu/metisMenu.min.js"></script>
 
-    <div class="row" >
-      <div class="col-sm-6">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Cell Title
-          </div>
-          <div class="chart-stage">
-            <div id="FlotDemo01" class="Flot-demo" style="height:300px;"></div>
-          </div>
-          <div class="chart-notes">
-            Notes about this chart
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Cell Title
-          </div>
-          <div class="chart-stage">
-            <div id="placeholder1" style="height:300px;"></div>
-          </div>
-          <div class="chart-notes">
-            Notes about this chart
-          </div>
-        </div>
-      </div>
+    <!-- Custom Theme JavaScript -->
+    <script src="./SBAdmin/dist/js/sb-admin-2.js"></script>
 
-    </div>
+    <!-- Three.js -->
+    <script src="./lib/three.min.js"></script>
+    <script src="./lib/TrackballControls.js"></script>
 
-    <div class="row">
-      <div class="col-sm-6 col-md-3">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Cell Title
-          </div>
-          <div class="chart-stage" id="globaltextbox">
-            <script>
-              var t = require('electron').remote.getGlobal('sharedObject').filecontents;
-              $('#globaltextbox').text(t);
-            </script>
-          </div>
-          <div class="chart-notes">
-            Notes about this chart
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-3">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Cell Title
-          </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
-          </div>
-          <div class="chart-notes">
-            Notes about this chart
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-3">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Cell Title
-          </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
-          </div>
-          <div class="chart-notes">
-            Notes about this chart
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-3">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Cell Title
-          </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
-          </div>
-          <div class="chart-notes">
-            Notes about this chart
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-
-    <hr>
-
-    <!-- <p class="small text-muted">Built with &#9829; by <a href="https://keen.io">Keen IO</a></p> -->
-
-  </div>
-
-
-  <script type="text/javascript" src="./assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-
-  <script type="text/javascript" src="./assets/lib/holderjs/holder.js"></script>
-  <script>
-    Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
-  </script>
-
-  <script type="text/javascript" src="./assets/lib/keen-js/dist/keen.min.js"></script>
-  <script type="text/javascript" src="./assets/js/meta.js"></script>
-
-  <!-- my apis -->
-  <script src="./modelviewer.js"></script>
-
-  <!-- script to handle file read process -->
-  <script>require('./readfile.js')</script>
-
-  <!-- script to plot data -->
-  <script>require('./plottimeseries.js')</script>
+    <!-- My Javascript -->
+    <script src="./modelviewer.js"></script>
+    <script>require('./readfile.js')</script>
+    <script>require('./plottimeseries.js')</script>
 
 </body>
+
 </html>

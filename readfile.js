@@ -81,13 +81,11 @@ function readCSV(path) {
 
   // 読み込みが完了したら、グローバル変数に格納
   parser.on('end', () => {
-    console.log('end');
     remote.getGlobal('sharedObject').timestamp = timestamp_;
     remote.getGlobal('sharedObject').x = x_;
 
     // misc.
-    //t = remote.getGlobal('sharedObject').timestamp.toString();
-    t = remote.getGlobal('sharedObject').x.toString();
+    var t = remote.getGlobal('sharedObject').x.toString();
     $('#filetext').text(t);
   });
 }

@@ -16,8 +16,8 @@ var options = {
   }
 };
 
-var analyzeButton = document.getElementById('analyze');
-analyzeButton.addEventListener('click', ()=>{
+var button = document.getElementById('analyze');
+button.addEventListener('click', ()=>{
   var t = main.getTimestamp();
   var x = main.getX();
   data = main.transpose([t,x]);
