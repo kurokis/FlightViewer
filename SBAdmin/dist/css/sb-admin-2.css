@@ -18,7 +18,8 @@ body {
   #page-wrapper {
     position: inherit;
     margin: 0 0 0 250px;
-    padding: 0 30px;
+    /*padding: 0 30px;*/
+    padding: 30px 30px; /* Modified due to change in navbar style from navbar-static-top to navbar-fixed-top */
     border-left: 1px solid #e7e7e7;
   }
 }
