@@ -1,8 +1,7 @@
 var $ = jQuery = require("./lib/jquery-3.1.1.min.js"); // jQuery
 var flot = require("./lib/jquery.flot.js"); // flot
-
-// Write this to access "export" functions in main.js
-const main = require('electron').remote.require("./main");
+var {ipcRenderer, remote} = require('electron');
+const main = remote.require("./main");
 
 // Placeholder ID with #
 var placeholderID = '#FlotDemo01';
@@ -16,15 +15,23 @@ var options = {
   }
 };
 
-var button = document.getElementById('analyze');
-button.addEventListener('click', ()=>{
-  var t = main.getTimestamp();
-  var x = main.getX();
-  data = main.transpose([t,x]);
-  $.plot(placeholderID, [ data ], options);
-}, false);
+// Plot data on 'plotUpdate' event
+ipcRenderer.on('plotUpdate', (event, arg) => {
+  //console.log(arg) // prints "pong"
+  plotData();
+})
 
 // Change dimension on resize
 $(window).resize(function() {
-    $.plot(placeholderID, [ data ], options);
+    refresh();
 });
+
+function plotData(){
+  var t = main.getTimestamp();
+  var x = main.getX();
+  data = main.transpose([t,x]);
+  refresh();
+}
+function refresh(){
+  $.plot(placeholderID, [ data ], options);
+}

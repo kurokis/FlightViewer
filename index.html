@@ -33,6 +33,9 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <!-- Bootstrap slider -->
+    <link href="./node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet" type="text/css">
+
 </head>
 
 <body>
@@ -80,6 +83,28 @@
                 </li>
               </ul>
               <!-- /.navbar-nav -->
+
+              <!-- Navigation slider -->
+              <ul class="nav navbar-top-links navbar-right">
+                <li><div id="animationSlider"></div></li>
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+              </ul>
             </div>
             <!-- navbar-collapse -->
           </div>
@@ -148,10 +173,10 @@
               <div class="col-sm-6">
                 <div class="panel panel-default">
                   <div class="panel-heading">
-                    Contents of the selected file
+                    Slider Plot
                   </div>
                   <div class="panel-body">
-                      <p id="filetext" style="word-wrap: break-word;">(file not selected)</p>
+                    <div id="FlotDemo01" class="Flot-demo" style="height:300px;"></div>
                   </div>
                   <div class="panel-footer">
                     Notes about this chart
@@ -165,10 +190,10 @@
               <div class="col-sm-6">
                 <div class="panel panel-default">
                   <div class="panel-heading">
-                    Flot Demo
+                    Cell Title
                   </div>
                   <div class="panel-body">
-                    <div id="FlotDemo01" class="Flot-demo" style="height:300px;"></div>
+                    <p id="filetext" style="word-wrap: break-word;">(file not selected)</p>
                   </div>
                   <div class="panel-footer">
                     Notes about this chart
@@ -198,7 +223,9 @@
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <script src="./SBAdmin/vendor/jquery/jquery.min.js"></script>
+    <!-- <script src="./SBAdmin/vendor/jquery/jquery.min.js"></script> -->
+    <script src="./lib/jquery-3.1.1.min.js"></script>
+
     <script src="./lib/jquery_after.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
@@ -218,6 +245,8 @@
     <script src="./modelviewer.js"></script>
     <script>require('./readfile.js')</script>
     <script>require('./plotdemo.js')</script>
+    <script>require('./animationcontrol.js')</script>
+
 
 </body>
 

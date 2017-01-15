@@ -3,7 +3,7 @@
 var globaltext;
 
 // 参考 http://programmer-jobs.blogspot.jp/2016/06/electron-file-open.html
-const remote = require('electron').remote;
+var {ipcRenderer, remote} = require('electron');
 const dialog = remote.dialog;
 const browserWindow = remote.BrowserWindow;
 
@@ -65,6 +65,7 @@ function readCSV(path) {
   // ローカル変数
   var timestamp_ = [];
   var x_ = [];
+  var nData_ = 0;
 
   const parser = csv.parse({columns : parseColumns});
   const readableStream = fs.createReadStream(path, {encoding: 'utf-8'});
@@ -76,6 +77,7 @@ function readCSV(path) {
     while(data = parser.read()){
       timestamp_.push(parseFloat(data.timestamp));
       x_.push(parseFloat(data.x));
+      nData_=nData_+1;
     }
   });
 
@@ -83,9 +85,9 @@ function readCSV(path) {
   parser.on('end', () => {
     remote.getGlobal('sharedObject').timestamp = timestamp_;
     remote.getGlobal('sharedObject').x = x_;
+    remote.getGlobal('sharedObject').nData = nData_;
 
-    // misc.
-    var t = remote.getGlobal('sharedObject').x.toString();
-    $('#filetext').text(t);
+    ipcRenderer.send('fileReadComplete',0);
+    ipcRenderer.send('requestPlotUpdate',0);
   });
 }

@@ -1,5 +1,5 @@
 {
-  "name": "ui",
+  "name": "FlightViewer",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -11,8 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron-prebuilt": "*",
-    "jquery": "*",
-    "csv": "*"
+    "csv": "*",
+    "bootstrap-slider": "*"
   }
 }
