@@ -28,7 +28,7 @@ $(window).resize(function() {
 
 function plotData(){
   var t = main.getTimestamp();
-  var x = main.getX();
+  var x = main.getLat();
   data = main.transpose([t,x]);
   refresh();
 }

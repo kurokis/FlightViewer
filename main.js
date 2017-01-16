@@ -35,8 +35,8 @@ exports.getTimestamp = () =>{
   return global.sharedObject.timestamp.slice(0,global.sharedObject.current+1);
 }
 
-exports.getX = () =>{
-  return global.sharedObject.x.slice(0,global.sharedObject.current+1);
+exports.getLat = () =>{
+  return global.sharedObject.lat.slice(0,global.sharedObject.current+1);
 }
 
 exports.getNData = ()=>{
@@ -71,7 +71,9 @@ ipcMain.on('fileReadComplete', (event, arg) => {
 global.sharedObject = {
   filecontents: 'None',
   timestamp: null,
-  x: null,
+  lat: null,
+  lon: null,
+  alt: null,
   nData: 0,
   current: 0
 }
