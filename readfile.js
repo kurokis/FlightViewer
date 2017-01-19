@@ -1,7 +1,5 @@
 'use strict';
 
-var globaltext;
-
 // 参考 http://programmer-jobs.blogspot.jp/2016/06/electron-file-open.html
 var {ipcRenderer, remote} = require('electron');
 const dialog = remote.dialog;

@@ -36,6 +36,9 @@
     <!-- Bootstrap slider -->
     <link href="./node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet" type="text/css">
 
+    <!-- Leaflet -->
+    <link  href="./node_modules/leaflet/dist/leaflet.css"  rel="stylesheet" type="text/css"/>
+
 </head>
 
 <body>
@@ -186,13 +189,30 @@
             <!-- /.row -->
 
             <div class="row" >
+              <div class="col-sm-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    Cell Title
+                  </div>
+                  <div class="panel-body">
+                    <div id="openStreetMap" style="height:500px"></div>
+                  </div>
+                  <div class="panel-footer">
+                    Notes about this chart
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.row -->
+
+            <div class="row" >
               <div class="col-sm-6">
                 <div class="panel panel-default">
                   <div class="panel-heading">
                     Cell Title
                   </div>
                   <div class="panel-body">
-                    <p id="filetext" style="word-wrap: break-word;">(file not selected)</p>
+                    <div id="placeholder1" style="height:300px;"></div>
                   </div>
                   <div class="panel-footer">
                     Notes about this chart
@@ -205,7 +225,7 @@
                     Cell Title
                   </div>
                   <div class="panel-body">
-                    <div id="placeholder1" style="height:300px;"></div>
+                    <div id="placeholder2" style="height:300px;"></div>
                   </div>
                   <div class="panel-footer">
                     Notes about this chart
@@ -245,6 +265,7 @@
     <script>require('./readfile.js')</script>
     <script>require('./plotdemo.js')</script>
     <script>require('./animationcontrol.js')</script>
+    <script>require('./mapviewer.js')</script>
 
 
 </body>

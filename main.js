@@ -30,13 +30,27 @@ app.on('ready', function() {
 });
 
 //============================== Remote functions ==============================
+var filterStep = 100;
 
 exports.getTimestamp = () =>{
-  return global.sharedObject.timestamp.slice(0,global.sharedObject.current+1);
+  return global.sharedObject.timestamp.slice(0,global.sharedObject.current+1).filter(function(value, index, Arr) {
+    return index % filterStep == 0;});
 }
 
 exports.getLat = () =>{
-  return global.sharedObject.lat.slice(0,global.sharedObject.current+1);
+  return global.sharedObject.lat.slice(0,global.sharedObject.current+1).filter(function(value, index, Arr) {
+    return index % filterStep == 0;});
+}
+
+exports.getLatLngs = ()=>{
+  var lat_ = global.sharedObject.lat.slice(0,global.sharedObject.current+1).filter(function(value, index, Arr) {
+    return index % filterStep == 0;
+  });
+  var lon_ = global.sharedObject.lon.slice(0,global.sharedObject.current+1).filter(function(value, index, Arr) {
+    return index % filterStep == 0;
+  });
+  var latlon_ = exports.transpose([lat_,lon_]);
+  return latlon_
 }
 
 exports.getNData = ()=>{

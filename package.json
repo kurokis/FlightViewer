@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "csv": "*",
-    "bootstrap-slider": "*"
+    "bootstrap-slider": "*",
+    "leaflet": "*"
   }
 }
