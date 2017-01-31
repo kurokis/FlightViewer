@@ -9,6 +9,7 @@ const browserWindow = remote.BrowserWindow;
 var fs = require('fs');
 var csv = require('csv'); // Node-csv (npm install csv)
 
+// =============================================================================
 // Actions for file select button
 var window = remote.getCurrentWindow();
 var options = {
@@ -20,59 +21,85 @@ var options = {
   ],
   properties: ['openFile', 'createDirectory']
 };
-var button = document.getElementById('fileSelect');
-button.addEventListener('click', ()=>{
+var fileSelectButton = document.getElementById('fileSelect');
+fileSelectButton.addEventListener('click', ()=>{
   dialog.showOpenDialog(window, options,
     // コールバック関数
     function (filenames) {
       if (filenames) {
         var path = filenames[0];
         main.setPath(path);
-        readCSV(path);
         updateNavigationBar();
       }
     });
 }, false);
 
-function readCSV(path) {
+// =============================================================================
+// Actions for analyze button
+var analyzeButton = document.getElementById('analyze');
+analyzeButton.addEventListener('click', function(){
+
+  // Change button text
+  analyzeButton.innerText = "Loading";
+
+  // disable the slider
+  main.setFileReadStatus(false);
+  ipcRenderer.send('requestUpdateAnimationSlider',null);
+
+  // get file path
+  var path = main.getPath();
+
+  // CSVヘッダ行とプログラム上の名称の対応表を作成
   // 左：CSVファイル上の列名 / 右：プログラム上の名称
-  const columnsSample = {
-    'timestamp': 'timestamp',
-    'lat': 'lat',
-    'lon': 'lon',
-    'alt': 'alt',
-  };
-  const columnsDJI = {
-    'Latitude (Deg)': 'lat',
-    ' Longitude (Deg)': 'lon',
-    ' GPS Altitude (m)': 'alt',
-    ' N Velocity(m/s)': 'vn',
-    ' E Velocity(m/s)': 've',
-    ' D Velocity(m/s)': 'vd',
-    ' Velocity(m/s)': 'velocity',
-    ' Ground Speed(m/s)': 'gs',
-    ' AccelerometerX(g)': 'ax',
-    ' AccelerometerY(g)': 'ay',
-    ' AccelerometerZ(g)': 'az',
-    ' GyroY(rad/s)': 'wx',
-    ' GyroX(rad/s)': 'wy',
-    ' GyroZ(rad/s)': 'wz',
-    ' Barometric Alt(m)': 'balt',
-    ' QuaternionX': 'qx',
-    ' QuaternionY': 'qy',
-    ' QuaternionZ': 'qz',
-    ' QuaternionW': 'qw',
-    ' Roll(deg)': 'roll',
-    ' Pitch(deg)': 'pitch',
-    ' Yaw(deg)': 'yaw',
-    ' MagneticX': 'mx',
-    ' MagneticY': 'my',
-    ' MagneticZ': 'mz',
-    ' Satellites': 'sat',
-    ' Sequence(135 Hz) ': 'timestamp',
-    //'': 'none_' // 2行目以降は終わりに,がついているため、列数を合わせるために必要
-  };
   var columns;
+  switch(main.getAircraftType()){
+    case "DJI":
+      columns = {
+        'Latitude (Deg)': 'lat',
+        ' Longitude (Deg)': 'lon',
+        ' GPS Altitude (m)': 'alt',
+        ' N Velocity(m/s)': 'vn',
+        ' E Velocity(m/s)': 've',
+        ' D Velocity(m/s)': 'vd',
+        ' Velocity(m/s)': 'velocity',
+        ' Ground Speed(m/s)': 'gs',
+        ' AccelerometerX(g)': 'ax',
+        ' AccelerometerY(g)': 'ay',
+        ' AccelerometerZ(g)': 'az',
+        ' GyroY(rad/s)': 'wx',
+        ' GyroX(rad/s)': 'wy',
+        ' GyroZ(rad/s)': 'wz',
+        ' Barometric Alt(m)': 'balt',
+        ' QuaternionX': 'qx',
+        ' QuaternionY': 'qy',
+        ' QuaternionZ': 'qz',
+        ' QuaternionW': 'qw',
+        ' Roll(deg)': 'roll',
+        ' Pitch(deg)': 'pitch',
+        ' Yaw(deg)': 'yaw',
+        ' MagneticX': 'mx',
+        ' MagneticY': 'my',
+        ' MagneticZ': 'mz',
+        ' Satellites': 'sat',
+        ' Sequence(135 Hz) ': 'timestamp',
+        //'': 'none_' // 2行目以降は終わりに,がついているため、列数を合わせるために必要
+        };
+      //columnsDJI;
+      break;
+    case "UT Small Quad":
+      columns = {};
+      break;
+    case "Sample":
+      columns = {
+        'timestamp': 'timestamp',
+        'lat': 'lat',
+        'lon': 'lon',
+        'alt': 'alt',
+      };
+      break;
+    default:
+    break;
+  }
 
   // CSVヘッダ行の解析関数
   function parseColumns(line) {
@@ -83,6 +110,11 @@ function readCSV(path) {
     return columns_renamed;
   }
 
+  // パーサを作成
+  const parser = csv.parse({columns : parseColumns});
+  const readableStream = fs.createReadStream(path, {encoding: 'utf-8'});
+  readableStream.pipe(parser);
+
   // ローカル変数
   var timestamp_ = [];
   var lat_ = [];
@@ -90,27 +122,9 @@ function readCSV(path) {
   var alt_ = [];
   var nData_ = 0;
 
-  var type = main.getAircraftType();
-  switch(type){
-    case "DJI":
-      columns = columnsDJI;
-      break;
-    case "UT Small Quad":
-      // add later
-      break;
-    case "Sample":
-      columns = columnsSample;
-      break;
-    default:
-    break;
-  }
-
-  const parser = csv.parse({columns : parseColumns});
-  const readableStream = fs.createReadStream(path, {encoding: 'utf-8'});
-  readableStream.pipe(parser);
-
-  // 読み込み途中の時は、データをローカルの配列に追加
+  // 読み込み途中の処理
   parser.on('readable', () => {
+    // データをローカルの配列に追加
     var data;
     while(data = parser.read()){
       timestamp_.push(parseFloat(data.timestamp));
@@ -121,19 +135,27 @@ function readCSV(path) {
     }
   });
 
-  // 読み込みが完了したら、グローバル変数に格納
+  // 読み込みが完了時の処理
   parser.on('end', () => {
+    // データをグローバル変数に格納
     remote.getGlobal('sharedObject').timestamp = timestamp_;
     remote.getGlobal('sharedObject').lat = lat_;
     remote.getGlobal('sharedObject').lon = lon_;
     remote.getGlobal('sharedObject').alt = alt_;
     remote.getGlobal('sharedObject').nData = nData_;
 
+    // Change button text
+    analyzeButton.innerText = "Analyze";
+
+    // enable the slider
     main.setFileReadStatus(true);
-    ipcRenderer.send('requestUpdateAnimationSlider',0); // enable the slider
-    ipcRenderer.send('requestPlotUpdate',0);
+    ipcRenderer.send('requestUpdateAnimationSlider',null);
+
+    // update plots
+    ipcRenderer.send('requestPlotUpdate',null);
   });
-}
+
+}, false);
 
 // =============================================================================
 // Action on dropdown click
