@@ -18,13 +18,13 @@ directionalLight.position.set(0,0,3);
 scene.add( directionalLight );
 
 //オブジェクト
-loader = new THREE.JSONLoader();
-loader.load( './models/bear.json', loadCallBack);
+var loader = new THREE.JSONLoader();
+loader.load( './models/drone.json', loadCallBack);
 
-planeGeometry = new THREE.PlaneGeometry( 1000, 1000, 10, 10 );//大きさ1000*100,分割数10*10
+planeGeometry = new THREE.PlaneGeometry( 1000, 1000, 10, 10 );//大きさ100*100,分割数1*1
 planeMaterial = new THREE.MeshBasicMaterial( { color: 0x533E25, wireframe:true} );
 planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
-planeMesh.position.y = -100;
+planeMesh.position.y = -40;
 planeMesh.rotation.x = 90 * 2 * Math.PI / 360; //左に角度いれるとラジアンに変換
 scene.add( planeMesh );
 // Controlを用意
@@ -42,8 +42,7 @@ function loadCallBack(geometry, materials){
         //今回使用した熊のデータはmaterial=undefinedなので使わない。
        var faceMaterial  = new THREE.MeshNormalMaterial();//法線マップにする（簡単に立体的に見せるため）
        json = new THREE.Mesh( geometry, faceMaterial );
-       json.scale.set( 20, 20, 20 );
-       json.position.y-=100;
+       json.scale.set( 100, 100, 100 );
        scene.add( json );
 }
 
