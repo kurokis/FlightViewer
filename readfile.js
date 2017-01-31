@@ -1,7 +1,8 @@
-'use strict';
-
+// ファイル読み込みを定義するスクリプト
 // 参考 http://programmer-jobs.blogspot.jp/2016/06/electron-file-open.html
+'use strict';
 var {ipcRenderer, remote} = require('electron');
+const main = remote.require("./main");
 const dialog = remote.dialog;
 const browserWindow = remote.BrowserWindow;
 
@@ -26,23 +27,12 @@ button.addEventListener('click', ()=>{
     function (filenames) {
       if (filenames) {
         var path = filenames[0];
-        $('#fileName').text(path);
+        main.setPath(path);
         readCSV(path);
+        updateNavigationBar();
       }
     });
 }, false);
-
-//function readText(path) {
-//  fs.readFile(path, 'utf8', function (err, data) {
-//    if (err) {
-//      return console.log(err);
-//    }
-//    console.log(data);
-//    remote.getGlobal('sharedObject').filecontents = data;
-//    $('#fileName').text(path);
-//    $('#filetext').text(data); // change text to contents of the file
-//  });
-//}
 
 function readCSV(path) {
   // 左：CSVファイル上の列名 / 右：プログラム上の名称
@@ -100,25 +90,26 @@ function readCSV(path) {
   var alt_ = [];
   var nData_ = 0;
 
-  if(type==null){
-    $('#fileName').text("Select aircraft type before selecting file.")
-  }else{
-    if(type=="Sample"){
+  var type = main.getAircraftType();
+  switch(type){
+    case "DJI":
+      columns = columnsDJI;
+      break;
+    case "UT Small Quad":
+      // add later
+      break;
+    case "Sample":
       columns = columnsSample;
-    }else{
-
-      if(type=="DJI"){
-        columns = columnsDJI;
-      }else{
-        console.log("Error")
-      }
-    }
+      break;
+    default:
+    break;
   }
+
   const parser = csv.parse({columns : parseColumns});
   const readableStream = fs.createReadStream(path, {encoding: 'utf-8'});
   readableStream.pipe(parser);
 
-  // 読み込み途中の時は、データを配列に追加
+  // 読み込み途中の時は、データをローカルの配列に追加
   parser.on('readable', () => {
     var data;
     while(data = parser.read()){
@@ -138,24 +129,53 @@ function readCSV(path) {
     remote.getGlobal('sharedObject').alt = alt_;
     remote.getGlobal('sharedObject').nData = nData_;
 
-    ipcRenderer.send('fileReadComplete',0);
+    main.setFileReadStatus(true);
+    ipcRenderer.send('requestUpdateAnimationSlider',0); // enable the slider
     ipcRenderer.send('requestPlotUpdate',0);
   });
 }
 
 // =============================================================================
-// Aircraft type select
-var type = null;
-
+// Action on dropdown click
 $('#aircraftTypeDJI').click(function(e){
-  type = "DJI";
-  $('#aircraftTypeDropdownText').text("DJI");
+  main.setAircraftType("DJI");
+  updateNavigationBar();
 });
 $('#aircraftTypeUTSmallQuad').click(function(e){
-  type = "UT Small Quad";
-  $('#aircraftTypeDropdownText').text("UT Small Quad");
+  main.setAircraftType("UT Small Quad");
+  updateNavigationBar();
 });
 $('#aircraftTypeSample').click(function(e){
-  type = "Sample";
-  $('#aircraftTypeDropdownText').text("Sample");
+  main.setAircraftType("Sample");
+  updateNavigationBar();
 });
+
+// =============================================================================
+// ipc handler
+ipcRenderer.on('updateNavigationBar', (event, arg) => {
+  updateNavigationBar();
+})
+
+// =============================================================================
+// Navigation bar update
+function updateNavigationBar(){
+  // Dropdown menu
+  var type = main.getAircraftType();
+  if(type == null){
+    // default type: DJI
+    // this will be called on start
+    type = "DJI";
+    main.setAircraftType(type);
+    $('#aircraftTypeDropdownText').text(type);
+  }else{
+    $('#aircraftTypeDropdownText').text(type);
+  }
+
+  // Filename text
+  var path = main.getPath();
+  if(path == null){
+    $('#fileName').text("(No file selected)")
+  }else{
+    $('#fileName').text(path);
+  }
+}

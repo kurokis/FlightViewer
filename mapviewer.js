@@ -1,4 +1,5 @@
-//var $ = jQuery = require("./lib/jquery-3.1.1.min.js"); // jQuery
+// OpenStreetMapの2次元地図を定義するスクリプト
+'use strict';
 var leaflet = require('leaflet') // bootstrap-slider (npm install bootstrap-slider)
 var {ipcRenderer, remote} = require('electron');
 const main = remote.require("./main");

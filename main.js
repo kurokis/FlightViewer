@@ -1,9 +1,9 @@
+// アプリ全体の動作を定義するスクリプト
 'use strict';
-
 const electron = require("electron"); // Electronのモジュール
 const app = electron.app; // アプリケーションをコントロールするモジュール
 const BrowserWindow = electron.BrowserWindow; // ウィンドウを作成するモジュール
-var {ipcMain} = require('electron');   // Inter-process communications http://electron.rocks/different-ways-to-communicate-between-main-and-renderer-process/
+var {ipcMain} = require('electron');   // Inter-process communications
 
 let mainWindow; // メインウィンドウはGCされないようにグローバル宣言
 
@@ -53,14 +53,43 @@ exports.getLatLngs = ()=>{
   return latlon_
 }
 
-exports.getNData = ()=>{
+exports.getNData = function(){
   return global.sharedObject.nData;
+}
+
+exports.getCurrent = function(){
+  return global.sharedObject.current;
+}
+
+exports.getAircraftType = function(){
+  return global.sharedObject.aircrafttype;
+}
+
+exports.getPath = function(){
+  return global.sharedObject.path;
+}
+
+exports.getFileReadStatus = function(){
+  return global.sharedObject.filereadstatus;
 }
 
 exports.setCurrent = function(current){
   global.sharedObject.current = current;
 }
 
+exports.setAircraftType = function(aircrafttype){
+  global.sharedObject.aircrafttype = aircrafttype;
+}
+
+exports.setPath = function(path){
+  global.sharedObject.path = path;
+}
+
+exports.setFileReadStatus = function(status){
+  global.sharedObject.filereadstatus = status;
+}
+
+// matrix transpose
 exports.transpose = function(matrix){
   return Object.keys(matrix[0])
       .map(colNumber => matrix.map(rowNumber => rowNumber[colNumber]));
@@ -68,15 +97,21 @@ exports.transpose = function(matrix){
 
 //======================== Inter-process communication =========================
 // http://electron.atom.io/docs/api/ipc-main/
+// http://electron.rocks/different-ways-to-communicate-between-main-and-renderer-process/
 
 // Fire 'plotUpdate' event upon request
 ipcMain.on('requestPlotUpdate', (event, arg) => {
-  event.sender.send('plotUpdate', 'pong') // plotdemo.js
+  event.sender.send('plotUpdate', 'pong') // plotdemo.js, mapviewer.js
 })
 
-// Enable slider when file read is complete
-ipcMain.on('fileReadComplete', (event, arg) => {
-  event.sender.send('enableAnimationSlider', 'pong') // animationcontrol.js
+// Fire 'updateAnimationSlider' event upon request
+ipcMain.on('requestUpdateAnimationSlider', (event, arg) => {
+  event.sender.send('updateAnimationSlider', null) // animationcontrol.js
+})
+
+// Fire 'updateNavigationBar' event upon request
+ipcMain.on('requestUpdateNavigationBar', (event, arg) => {
+  event.sender.send('updateNavigationBar', null) // readfile.js
 })
 
 //============================= Global variables ===============================
@@ -89,5 +124,8 @@ global.sharedObject = {
   lon: null,
   alt: null,
   nData: 0,
-  current: 0
+  current: 0,
+  aircrafttype: null,
+  path: null,
+  filereadstatus: false
 }
