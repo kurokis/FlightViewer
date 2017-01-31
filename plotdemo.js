@@ -13,9 +13,10 @@ var data = [];
 var options = {
   series: {
       lines: { show: true },
-      points: { show: true }
+      points: { show: false }
   }
 };
+var plot = $.plot(placeholderID,data,options);
 
 // =============================================================================
 // Change dimension on resize
@@ -34,10 +35,13 @@ ipcRenderer.on('plotUpdate', (event, arg) => {
 function plotData(){
   var t = main.getTimestamp();
   var x = main.getLat();
-  data = main.transpose([t,x]);
+  var data = [main.transpose([t,x])];
+  plot.setData(data);
   refresh();
 }
 // Plot refresh
 function refresh(){
-  $.plot(placeholderID, [ data ], options);
+  plot.resize();
+  plot.setupGrid();
+  plot.draw();
 }
