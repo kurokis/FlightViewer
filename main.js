@@ -30,8 +30,8 @@ app.on('ready', function() {
 });
 
 //============================== Remote functions ==============================
-exports.getTimestamp = function(){
-  return global.sharedObject.timestamp.slice(0,global.sharedObject.current+1);
+exports.getTime = function(){
+  return global.sharedObject.time.slice(0,global.sharedObject.current+1);
 }
 
 exports.getLat = function(){
@@ -81,6 +81,12 @@ exports.setFileReadStatus = function(status){
   global.sharedObject.filereadstatus = status;
 }
 
+exports.decode = function(filepath){
+  //const execFile = require('child_process').execFile;
+  const execFile = require('child_process').execFileSync;
+  const child = execFile('./py/dist/decodeDJI',[filepath]);
+}
+
 // matrix transpose
 exports.transpose = function(matrix){
   return Object.keys(matrix[0])
@@ -111,7 +117,7 @@ ipcMain.on('requestUpdateNavigationBar', (event, arg) => {
 // Global variables
 global.sharedObject = {
   filecontents: 'None',
-  timestamp: null,
+  time: null,
   lat: null,
   lon: null,
   alt: null,

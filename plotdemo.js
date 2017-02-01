@@ -33,7 +33,7 @@ ipcRenderer.on('plotUpdate', (event, arg) => {
 // =============================================================================
 // Plot update
 function plotData(){
-  var t = main.getTimestamp();
+  var t = main.getTime();
   var x = main.getLat();
   var data = [main.transpose([t,x])];
   plot.setData(data);

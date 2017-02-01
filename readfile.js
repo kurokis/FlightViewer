@@ -40,20 +40,61 @@ var analyzeButton = document.getElementById('analyze');
 analyzeButton.addEventListener('click', function(){
 
   // Change button text
-  analyzeButton.innerText = "Loading";
+  analyzeButton.innerText = "Decoding";
+  ipcRenderer.send('requestUpdateNavigationBar',null);
 
   // disable the slider
   main.setFileReadStatus(false);
   ipcRenderer.send('requestUpdateAnimationSlider',null);
 
   // get file path
-  var path = main.getPath();
+  var path = main.getPath(); // path to selected file
+  var dpath = path.replace('.csv','_out.csv'); // path to decoded file
+
+  // decode file and replace path with dpath
+  switch(main.getAircraftType()){
+    case "DJI":
+      main.decode(path);
+      path = dpath;
+      break;
+    default:
+      break;
+  }
+
+  // Change button text
+  analyzeButton.innerText = "Loading";
 
   // CSVヘッダ行とプログラム上の名称の対応表を作成
   // 左：CSVファイル上の列名 / 右：プログラム上の名称
   var columns;
   switch(main.getAircraftType()){
     case "DJI":
+      columns = {
+        'Index': 'index',
+        'Time (s)': 'time',
+        'Latitude (deg)': 'lat',
+        'Longitude (deg)': 'lon',
+        'GPS Altitude (m)': 'alt',
+        'Barometric Altitude (m)': 'balt',
+        'Quaternion W': 'qw',
+        'Quaternion X': 'qx',
+        'Quaternion Y': 'qy',
+        'Quaternion Z': 'qz',
+	      'Roll (deg)': 'roll',
+        'Pitch (deg)': 'pitch',
+        'Yaw (deg)': 'yaw',
+	      'Accelerometer X (g)': 'ax',
+        'Accelerometer Y (g)': 'ay',
+        'Accelerometer Z (g)': 'az',
+	      'Gyro X (deg/s)': 'wx',
+        'Gyro Y (deg/s)': 'wy',
+        'Gyro Z (deg/s)': 'wz',
+	      'Magnetic X (G)': 'mx',
+        'Magnetic Y (G)': 'my',
+        'Magnetic Z (G)': 'mz'
+      }
+      break;
+    case "DJI Raw":
       columns = {
         'Latitude (Deg)': 'lat',
         ' Longitude (Deg)': 'lon',
@@ -81,17 +122,16 @@ analyzeButton.addEventListener('click', function(){
         ' MagneticY': 'my',
         ' MagneticZ': 'mz',
         ' Satellites': 'sat',
-        ' Sequence(135 Hz) ': 'timestamp',
-        //'': 'none_' // 2行目以降は終わりに,がついているため、列数を合わせるために必要
+        ' Sequence(135 Hz) ': 'time',
+        '': 'none_' // 2行目以降は終わりに,がついているため、列数を合わせるために必要
         };
-      //columnsDJI;
       break;
     case "UT Small Quad":
       columns = {};
       break;
     case "Sample":
       columns = {
-        'timestamp': 'timestamp',
+        'timestamp': 'time',
         'lat': 'lat',
         'lon': 'lon',
         'alt': 'alt',
@@ -116,7 +156,7 @@ analyzeButton.addEventListener('click', function(){
   readableStream.pipe(parser);
 
   // ローカル変数
-  var timestamp_ = [];
+  var time_ = [];
   var lat_ = [];
   var lon_ = [];
   var alt_ = [];
@@ -127,18 +167,23 @@ analyzeButton.addEventListener('click', function(){
     // データをローカルの配列に追加
     var data;
     while(data = parser.read()){
-      timestamp_.push(parseFloat(data.timestamp));
-      lat_.push(parseFloat(data.lat));
-      lon_.push(parseFloat(data.lon));
-      alt_.push(parseFloat(data.alt));
-      nData_=nData_+1;
+      if(isNaN(data.time)){
+        // まれにNaNになる場合があるため、その場合は飛ばす
+        // データが失われるわけではない
+      }else{
+        time_.push(parseFloat(data.time));
+        lat_.push(parseFloat(data.lat));
+        lon_.push(parseFloat(data.lon));
+        alt_.push(parseFloat(data.alt));
+        nData_=nData_+1;
+      }
     }
   });
 
   // 読み込みが完了時の処理
   parser.on('end', () => {
     // データをグローバル変数に格納
-    remote.getGlobal('sharedObject').timestamp = timestamp_;
+    remote.getGlobal('sharedObject').time = time_;
     remote.getGlobal('sharedObject').lat = lat_;
     remote.getGlobal('sharedObject').lon = lon_;
     remote.getGlobal('sharedObject').alt = alt_;
@@ -153,6 +198,13 @@ analyzeButton.addEventListener('click', function(){
 
     // update plots
     ipcRenderer.send('requestPlotUpdate',null);
+
+    const stringifier = csv.stringify({});
+    const writableStream = fs.createWriteStream('output.csv', {encoding: 'utf-8'});
+    stringifier.pipe(writableStream);
+
+    stringifier.write(lat_);
+    console.log(lat_);
   });
 
 }, false);
@@ -161,6 +213,10 @@ analyzeButton.addEventListener('click', function(){
 // Action on dropdown click
 $('#aircraftTypeDJI').click(function(e){
   main.setAircraftType("DJI");
+  updateNavigationBar();
+});
+$('#aircraftTypeDJIRaw').click(function(e){
+  main.setAircraftType("DJI Raw");
   updateNavigationBar();
 });
 $('#aircraftTypeUTSmallQuad').click(function(e){
