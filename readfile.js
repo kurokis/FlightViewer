@@ -72,55 +72,55 @@ analyzeButton.addEventListener('click', function(){
       columns = {
         'Index': 'index',
         'Time (s)': 'time',
-        'Latitude (deg)': 'lat',
-        'Longitude (deg)': 'lon',
-        'GPS Altitude (m)': 'alt',
-        'Barometric Altitude (m)': 'balt',
-        'Quaternion W': 'qw',
-        'Quaternion X': 'qx',
-        'Quaternion Y': 'qy',
-        'Quaternion Z': 'qz',
+        'Latitude (deg)': 'latitude',
+        'Longitude (deg)': 'longitude',
+        'GPS Altitude (m)': 'gpsaltitude',
+        'Barometric Altitude (m)': 'barometricaltitude',
+        'Quaternion W': 'quaternionw',
+        'Quaternion X': 'quaternionx',
+        'Quaternion Y': 'quaterniony',
+        'Quaternion Z': 'quaternionz',
 	      'Roll (deg)': 'roll',
         'Pitch (deg)': 'pitch',
         'Yaw (deg)': 'yaw',
-	      'Accelerometer X (g)': 'ax',
-        'Accelerometer Y (g)': 'ay',
-        'Accelerometer Z (g)': 'az',
-	      'Gyro X (deg/s)': 'wx',
-        'Gyro Y (deg/s)': 'wy',
-        'Gyro Z (deg/s)': 'wz',
-	      'Magnetic X (G)': 'mx',
-        'Magnetic Y (G)': 'my',
-        'Magnetic Z (G)': 'mz'
+	      'Accelerometer X (g)': 'accelerometerx',
+        'Accelerometer Y (g)': 'accelerometery',
+        'Accelerometer Z (g)': 'accelerometerz',
+	      'Gyro X (deg/s)': 'gyrox',
+        'Gyro Y (deg/s)': 'gyroy',
+        'Gyro Z (deg/s)': 'gyroz',
+	      'Magnetic X (G)': 'magnetometerx',
+        'Magnetic Y (G)': 'magnetometery',
+        'Magnetic Z (G)': 'magnetometerz'
       }
       break;
     case "DJI Raw":
       columns = {
-        'Latitude (Deg)': 'lat',
-        ' Longitude (Deg)': 'lon',
-        ' GPS Altitude (m)': 'alt',
+        'Latitude (Deg)': 'latitude',
+        ' Longitude (Deg)': 'longitude',
+        ' GPS Altitude (m)': 'galt',
         ' N Velocity(m/s)': 'vn',
         ' E Velocity(m/s)': 've',
         ' D Velocity(m/s)': 'vd',
         ' Velocity(m/s)': 'velocity',
         ' Ground Speed(m/s)': 'gs',
-        ' AccelerometerX(g)': 'ax',
-        ' AccelerometerY(g)': 'ay',
-        ' AccelerometerZ(g)': 'az',
-        ' GyroY(rad/s)': 'wx',
-        ' GyroX(rad/s)': 'wy',
-        ' GyroZ(rad/s)': 'wz',
-        ' Barometric Alt(m)': 'balt',
-        ' QuaternionX': 'qx',
-        ' QuaternionY': 'qy',
-        ' QuaternionZ': 'qz',
-        ' QuaternionW': 'qw',
+        ' AccelerometerX(g)': 'accelerometerx',
+        ' AccelerometerY(g)': 'accelerometery',
+        ' AccelerometerZ(g)': 'accelerometerz',
+        ' GyroY(rad/s)': 'gyrox',
+        ' GyroX(rad/s)': 'gyroy',
+        ' GyroZ(rad/s)': 'gyroz',
+        ' Barometric Alt(m)': 'barometricaltitude',
+        ' QuaternionX': 'quaternionx',
+        ' QuaternionY': 'quaterniony',
+        ' QuaternionZ': 'quaternionz',
+        ' QuaternionW': 'quaternionw',
         ' Roll(deg)': 'roll',
         ' Pitch(deg)': 'pitch',
         ' Yaw(deg)': 'yaw',
-        ' MagneticX': 'mx',
-        ' MagneticY': 'my',
-        ' MagneticZ': 'mz',
+        ' MagneticX': 'magnetometerx',
+        ' MagneticY': 'magnetometery',
+        ' MagneticZ': 'magnetometerz',
         ' Satellites': 'sat',
         ' Sequence(135 Hz) ': 'time',
         '': 'none_' // 2行目以降は終わりに,がついているため、列数を合わせるために必要
@@ -128,14 +128,6 @@ analyzeButton.addEventListener('click', function(){
       break;
     case "UT Small Quad":
       columns = {};
-      break;
-    case "Sample":
-      columns = {
-        'timestamp': 'time',
-        'lat': 'lat',
-        'lon': 'lon',
-        'alt': 'alt',
-      };
       break;
     default:
     break;
@@ -156,10 +148,12 @@ analyzeButton.addEventListener('click', function(){
   readableStream.pipe(parser);
 
   // ローカル変数
-  var time_ = [];
-  var lat_ = [];
-  var lon_ = [];
-  var alt_ = [];
+  var time_ = [], latitude_ = [], longitude_ = [], gpsaltitude_ = [], barometricaltitude_ = [];
+  var quaternionw_ = [], quaternionx_ = [], quaterniony_ = [], quaternionz_ = [];
+  var roll_ = [], pitch_ = [], yaw_ = [];
+  var accelerometerx_ = [], accelerometery_ = [], accelerometerz_ = [];
+  var gyrox_ = [], gyroy_ = [], gyroz_ = [];
+  var magnetometerx_ = [], magnetometery_ = [], magnetometerz_ = [];
   var nData_ = 0;
 
   // 読み込み途中の処理
@@ -172,9 +166,26 @@ analyzeButton.addEventListener('click', function(){
         // データが失われるわけではない
       }else{
         time_.push(parseFloat(data.time));
-        lat_.push(parseFloat(data.lat));
-        lon_.push(parseFloat(data.lon));
-        alt_.push(parseFloat(data.alt));
+        latitude_.push(parseFloat(data.latitude));
+        longitude_.push(parseFloat(data.longitude));
+        gpsaltitude_.push(parseFloat(data.gpsaltitude));
+        barometricaltitude_.push(parseFloat(data.barometricaltitude));
+        quaternionw_.push(parseFloat(data.quaternionw));
+        quaternionx_.push(parseFloat(data.quaternionx));
+        quaterniony_.push(parseFloat(data.quaterniony));
+        quaternionz_.push(parseFloat(data.quaternionz));
+        roll_.push(parseFloat(data.roll));
+        pitch_.push(parseFloat(data.pitch));
+        yaw_.push(parseFloat(data.yaw));
+        accelerometerx_.push(parseFloat(data.accelerometerx));
+        accelerometery_.push(parseFloat(data.accelerometery));
+        accelerometerz_.push(parseFloat(data.accelerometerz));
+        gyrox_.push(parseFloat(data.gyrox));
+        gyroy_.push(parseFloat(data.gyroy));
+        gyroz_.push(parseFloat(data.gyroz));
+        magnetometerx_.push(parseFloat(data.magnetometerx));
+        magnetometery_.push(parseFloat(data.magnetometery));
+        magnetometerz_.push(parseFloat(data.magnetometerz));
         nData_=nData_+1;
       }
     }
@@ -184,10 +195,29 @@ analyzeButton.addEventListener('click', function(){
   parser.on('end', () => {
     // データをグローバル変数に格納
     remote.getGlobal('sharedObject').time = time_;
-    remote.getGlobal('sharedObject').lat = lat_;
-    remote.getGlobal('sharedObject').lon = lon_;
-    remote.getGlobal('sharedObject').alt = alt_;
+    remote.getGlobal('sharedObject').latitude = latitude_;
+    remote.getGlobal('sharedObject').longitude = longitude_;
+    remote.getGlobal('sharedObject').gpsaltitude = gpsaltitude_;
+    remote.getGlobal('sharedObject').barometricaltitude = barometricaltitude_;
+    remote.getGlobal('sharedObject').quaternionw = quaternionw_;
+    remote.getGlobal('sharedObject').quaternionx = quaternionx_;
+    remote.getGlobal('sharedObject').quaterniony = quaterniony_;
+    remote.getGlobal('sharedObject').quaternionz = quaternionz_;
+    remote.getGlobal('sharedObject').roll = roll_;
+    remote.getGlobal('sharedObject').pitch = pitch_;
+    remote.getGlobal('sharedObject').yaw = yaw_;
+    remote.getGlobal('sharedObject').accelerometerx = accelerometerx_;
+    remote.getGlobal('sharedObject').accelerometery = accelerometery_;
+    remote.getGlobal('sharedObject').accelerometerz = accelerometerz_;
+    remote.getGlobal('sharedObject').gyrox = gyrox_;
+    remote.getGlobal('sharedObject').gyroy = gyroy_;
+    remote.getGlobal('sharedObject').gyroz = gyroz_;
+    remote.getGlobal('sharedObject').magnetometerx = magnetometerx_;
+    remote.getGlobal('sharedObject').magnetometery = magnetometery_;
+    remote.getGlobal('sharedObject').magnetometerz = magnetometerz_;
+
     remote.getGlobal('sharedObject').nData = nData_;
+
 
     // Change button text
     analyzeButton.innerText = "Analyze";
@@ -198,13 +228,6 @@ analyzeButton.addEventListener('click', function(){
 
     // update plots
     ipcRenderer.send('requestPlotUpdate',null);
-
-    const stringifier = csv.stringify({});
-    const writableStream = fs.createWriteStream('output.csv', {encoding: 'utf-8'});
-    stringifier.pipe(writableStream);
-
-    stringifier.write(lat_);
-    console.log(lat_);
   });
 
 }, false);
@@ -221,10 +244,6 @@ $('#aircraftTypeDJIRaw').click(function(e){
 });
 $('#aircraftTypeUTSmallQuad').click(function(e){
   main.setAircraftType("UT Small Quad");
-  updateNavigationBar();
-});
-$('#aircraftTypeSample').click(function(e){
-  main.setAircraftType("Sample");
   updateNavigationBar();
 });
 

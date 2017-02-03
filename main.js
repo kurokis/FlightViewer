@@ -31,16 +31,16 @@ app.on('ready', function() {
 
 //============================== Remote functions ==============================
 exports.getTime = function(){
-  return global.sharedObject.time.slice(0,global.sharedObject.current+1);
+  return global.sharedObject.time.slice(0,global.sharedObject.indexend+1);
 }
 
-exports.getLat = function(){
-  return global.sharedObject.lat.slice(0,global.sharedObject.current+1);
+exports.getBarometricAltitude = function(){
+  return global.sharedObject.barometricaltitude.slice(0,global.sharedObject.indexend+1);
 }
 
 exports.getLatLngs = function(){
-  var lat_ = global.sharedObject.lat.slice(0,global.sharedObject.current+1)
-  var lon_ = global.sharedObject.lon.slice(0,global.sharedObject.current+1)
+  var lat_ = global.sharedObject.latitude.slice(0,global.sharedObject.indexend+1)
+  var lon_ = global.sharedObject.longitude.slice(0,global.sharedObject.indexend+1)
   var latlon_ = exports.transpose([lat_,lon_]);
   return latlon_;
 }
@@ -49,8 +49,8 @@ exports.getNData = function(){
   return global.sharedObject.nData;
 }
 
-exports.getCurrent = function(){
-  return global.sharedObject.current;
+exports.getIndexEnd = function(){
+  return global.sharedObject.indexend;
 }
 
 exports.getAircraftType = function(){
@@ -65,8 +65,8 @@ exports.getFileReadStatus = function(){
   return global.sharedObject.filereadstatus;
 }
 
-exports.setCurrent = function(current){
-  global.sharedObject.current = current;
+exports.setIndexEnd = function(indexend){
+  global.sharedObject.indexend = indexend;
 }
 
 exports.setAircraftType = function(aircrafttype){
@@ -118,11 +118,29 @@ ipcMain.on('requestUpdateNavigationBar', (event, arg) => {
 global.sharedObject = {
   filecontents: 'None',
   time: null,
-  lat: null,
-  lon: null,
-  alt: null,
+  latitude: null,
+  longitude: null,
+  gpsaltitude: null,
+  barometricaltitude: null,
+  quaternionw: null,
+  quaternionx: null,
+  quaterniony: null,
+  quaternionz: null,
+  roll: null,
+  pitch: null,
+  yaw: null,
+  accelerometerx: null,
+  accelerometery: null,
+  accelerometerz: null,
+  gyrox: null,
+  gyroy: null,
+  gyroz: null,
+  magnetometerx: null,
+  magnetometery: null,
+  magnetometerz: null,
   nData: 0,
-  current: 0,
+  indexstart: 0,
+  indexend: 0,
   aircrafttype: null,
   path: null,
   filereadstatus: false

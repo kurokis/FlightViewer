@@ -19,7 +19,7 @@ var slider = new Slider("#animationSlider",{
 // =============================================================================
 // Request plot update on slide
 slider.on('slide', function(e) {
-    main.setCurrent(slider.getValue());
+    main.setIndexEnd(slider.getValue());
     ipcRenderer.send('requestPlotUpdate',-1);
 });
 
@@ -36,7 +36,7 @@ function updateAnimationSlider(){
   if(main.getFileReadStatus()==true){
     slider.setAttribute('max', main.getNData());
     slider.enable();
-    slider.setValue(main.getCurrent());
+    slider.setValue(main.getIndexEnd());
   }else{
     slider.disable();
   }

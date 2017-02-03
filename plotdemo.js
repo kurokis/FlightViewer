@@ -34,7 +34,7 @@ ipcRenderer.on('plotUpdate', (event, arg) => {
 // Plot update
 function plotData(){
   var t = main.getTime();
-  var x = main.getLat();
+  var x = main.getBarometricAltitude();
   var data = [main.transpose([t,x])];
   plot.setData(data);
   refresh();
