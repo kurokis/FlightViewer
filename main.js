@@ -38,6 +38,10 @@ exports.getBarometricAltitude = function(){
   return global.sharedObject.barometricaltitude.slice(0,global.sharedObject.indexend+1);
 }
 
+exports.getGPSAltitude = function(){
+  return global.sharedObject.gpsaltitude.slice(0,global.sharedObject.indexend+1);
+}
+
 exports.getLatLngs = function(){
   var lat_ = global.sharedObject.latitude.slice(0,global.sharedObject.indexend+1)
   var lon_ = global.sharedObject.longitude.slice(0,global.sharedObject.indexend+1)
