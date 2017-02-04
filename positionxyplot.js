@@ -6,17 +6,13 @@ var {ipcRenderer, remote} = require('electron');
 const main = remote.require("./main");
 
 // Placeholder ID with #
-var placeholderID = '#altitudePlot';
-var choiceContainerID = '#altitudePlotChoices';
+var placeholderID = '#positionXYPlot';
+var choiceContainerID = '#positionXYPlotChoices';
 
 // Plot options
 var datasets = {
   "gps": {
     label: "GPS",
-    data: []
-  },
-  "barometric": {
-    label: "Barometric",
     data: []
   }
 }
@@ -65,13 +61,7 @@ ipcRenderer.on('plotUpdate', (event, arg) => {
 // Plot update
 function plotData(){
   // Update datasets
-  var t = main.getTime();
-  var x = main.getGPSAltitude();
-  datasets['gps'].data = main.transpose([t,x]);
-
-  var t = main.getTime();
-  var x = main.getBarometricAltitude();
-  datasets['barometric'].data = main.transpose([t,x]);
+  datasets['gps'].data = main.getPositionXY();
 
 	data = [];
 	choiceContainer.find("input:checked").each(function () {

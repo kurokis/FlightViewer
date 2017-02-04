@@ -6,17 +6,21 @@ var {ipcRenderer, remote} = require('electron');
 const main = remote.require("./main");
 
 // Placeholder ID with #
-var placeholderID = '#altitudePlot';
-var choiceContainerID = '#altitudePlotChoices';
+var placeholderID = '#attitudePlot';
+var choiceContainerID = '#attitudePlotChoices';
 
 // Plot options
 var datasets = {
-  "gps": {
-    label: "GPS",
+  "roll": {
+    label: "Roll",
     data: []
   },
-  "barometric": {
-    label: "Barometric",
+  "pitch": {
+    label: "Pitch",
+    data: []
+  },
+  "yaw": {
+    label: "Yaw",
     data: []
   }
 }
@@ -64,25 +68,28 @@ ipcRenderer.on('plotUpdate', (event, arg) => {
 // =============================================================================
 // Plot update
 function plotData(){
-  // Update datasets
-  var t = main.getTime();
-  var x = main.getGPSAltitude();
-  datasets['gps'].data = main.transpose([t,x]);
+  if(main.getFileReadStatus()){ // If file read is complete
+    // Update datasets
+    var t = main.getTime();
+    var roll = main.getRoll();
+    var pitch = main.getPitch();
+    var yaw = main.getYaw();
 
-  var t = main.getTime();
-  var x = main.getBarometricAltitude();
-  datasets['barometric'].data = main.transpose([t,x]);
+    datasets['roll'].data = main.transpose([t,roll]);
+    datasets['pitch'].data = main.transpose([t,pitch]);
+    datasets['yaw'].data = main.transpose([t,yaw]);
 
-	data = [];
-	choiceContainer.find("input:checked").each(function () {
-		var key = $(this).attr("name");
-		if (key && datasets[key]) {
-			data.push(datasets[key]);
-		}
-	});
+  	data = [];
+  	choiceContainer.find("input:checked").each(function () {
+  		var key = $(this).attr("name");
+  		if (key && datasets[key]) {
+  			data.push(datasets[key]);
+  		}
+  	});
 
-  plot.setData(data);
-  refresh();
+    plot.setData(data);
+    refresh();
+  }
 }
 
 // =============================================================================

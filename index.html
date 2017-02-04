@@ -164,24 +164,23 @@
                       JSON Model Viewer
                     </div>
                     <div class="panel-body">
-                        <div id="modelviewer"></div>
+                        <div id="modelviewer" style="height:200px;"></div>
                     </div>
                     <div class="panel-footer">
-                      Notes about this chart
+                      <div id = "modelViewerSlider"> </div>
                     </div>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="panel panel-default">
                   <div class="panel-heading">
-                    Altitude
+                    Attitude
                   </div>
                   <div class="panel-body">
-                    <div id="altitudePlot" style="height:300px;"></div>
-                    <p id = "altitudePlotChoices"></p>
+                    <div id="attitudePlot" style="height:200px;"></div>
                   </div>
                   <div class="panel-footer">
-                    Notes about this chart
+                    <p id = "attitudePlotChoices"></p>
                   </div>
                 </div>
               </div>
@@ -192,26 +191,26 @@
               <div class="col-sm-6">
                 <div class="panel panel-default">
                   <div class="panel-heading">
-                    Cell Title
+                    Position
                   </div>
                   <div class="panel-body">
-                    <div id="placeholder1" style="height:300px;"></div>
+                    <div id="positionXYPlot" style="height:200px;"></div>
                   </div>
                   <div class="panel-footer">
-                    Notes about this chart
+                    <p id = "positionXYPlotChoices"></p>
                   </div>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="panel panel-default">
                   <div class="panel-heading">
-                    Cell Title
+                    Altitude
                   </div>
                   <div class="panel-body">
-                    <div id="placeholder2" style="height:300px;"></div>
+                    <div id="altitudePlot" style="height:200px;"></div>
                   </div>
                   <div class="panel-footer">
-                    Notes about this chart
+                    <p id = "altitudePlotChoices"></p>
                   </div>
                 </div>
               </div>
@@ -246,7 +245,9 @@
     <script>require('./pagetransfer.js')</script>
     <script>require('./readfile.js')</script>
     <script>require('./animationcontrol.js')</script>
-    <script src="./modelviewer.js"></script>
+    <script>require('./modelviewer.js')</script>
+    <script>require('./attitudeplot.js')</script>
+    <script>require('./positionxyplot.js')</script>
     <script>require('./altitudeplot.js')</script>
 
 </body>

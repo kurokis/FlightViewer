@@ -31,26 +31,77 @@ app.on('ready', function() {
 
 //============================== Remote functions ==============================
 exports.getTime = function(){
-  return global.sharedObject.time.slice(0,global.sharedObject.indexend+1);
-}
-
-exports.getBarometricAltitude = function(){
-  return global.sharedObject.barometricaltitude.slice(0,global.sharedObject.indexend+1);
-}
-
-exports.getGPSAltitude = function(){
-  return global.sharedObject.gpsaltitude.slice(0,global.sharedObject.indexend+1);
+  return global.sharedObject.time.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
 }
 
 exports.getLatLngs = function(){
-  var lat_ = global.sharedObject.latitude.slice(0,global.sharedObject.indexend+1)
-  var lon_ = global.sharedObject.longitude.slice(0,global.sharedObject.indexend+1)
-  var latlon_ = exports.transpose([lat_,lon_]);
-  return latlon_;
+  var lat = global.sharedObject.latitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1)
+  var lon = global.sharedObject.longitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1)
+  var latlon = exports.transpose([lat,lon]);
+  return latlon;
+}
+
+exports.getPositionXY = function(){
+  var lat = global.sharedObject.latitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1)
+  var lon = global.sharedObject.longitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1)
+  var xy = exports.transpose([lon,lat]);
+  return xy;
+}
+
+exports.getGPSAltitude = function(){
+  return global.sharedObject.gpsaltitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
+}
+
+exports.getBarometricAltitude = function(){
+  return global.sharedObject.barometricaltitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
+}
+
+exports.getRoll = function(){
+  return global.sharedObject.roll.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
+}
+
+exports.getPitch = function(){
+  return global.sharedObject.pitch.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
+}
+
+exports.getYaw = function(){
+  return global.sharedObject.yaw.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
+}
+
+exports.getEuler = function(index){
+  var euler = {
+     'roll': 0,
+     'pitch': 0,
+     'yaw': 0
+   };
+  if(exports.getFileReadStatus()){
+    euler.roll = global.sharedObject.roll[index]*Math.PI/180;
+    euler.pitch = global.sharedObject.pitch[index]*Math.PI/180;
+    euler.yaw = global.sharedObject.yaw[index]*Math.PI/180;
+  }
+  return euler;
+}
+
+exports.getPosition = function(index){
+  var position = {
+     'x': 0,
+     'y': 0,
+     'z': 0
+   };
+  if(exports.getFileReadStatus()){
+    position.x = (global.sharedObject.longitude[index]-global.sharedObject.longitude[0])*111111*50;
+    position.y = (global.sharedObject.latitude[index]-global.sharedObject.latitude[0])*111111*50;
+    position.z = (global.sharedObject.barometricaltitude[index]-global.sharedObject.barometricaltitude[0])*(-50);
+  }
+  return position;
 }
 
 exports.getNData = function(){
   return global.sharedObject.nData;
+}
+
+exports.getIndexStart = function(){
+  return global.sharedObject.indexstart;
 }
 
 exports.getIndexEnd = function(){
@@ -67,6 +118,10 @@ exports.getPath = function(){
 
 exports.getFileReadStatus = function(){
   return global.sharedObject.filereadstatus;
+}
+
+exports.setIndexStart = function(indexstart){
+  global.sharedObject.indexstart = indexstart;
 }
 
 exports.setIndexEnd = function(indexend){

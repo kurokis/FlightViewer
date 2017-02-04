@@ -217,6 +217,7 @@ analyzeButton.addEventListener('click', function(){
     remote.getGlobal('sharedObject').magnetometerz = magnetometerz_;
 
     remote.getGlobal('sharedObject').nData = nData_;
+    remote.getGlobal('sharedObject').indexend = nData_;
 
 
     // Change button text

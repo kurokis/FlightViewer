@@ -13,14 +13,19 @@ var slider = new Slider("#animationSlider",{
   value: 0,
   tooltip: 'show',
   tooltip_position: 'bottom',
+  range: true,
   enabled: false
 });
 
 // =============================================================================
 // Request plot update on slide
-slider.on('slide', function(e) {
-    main.setIndexEnd(slider.getValue());
-    ipcRenderer.send('requestPlotUpdate',-1);
+slider.on('slideStop', function(e) {
+  //main.setIndexStart(Math.max(0,slider.getValue()-1350));
+  var range = slider.getValue();
+  console.log(range);
+  main.setIndexStart(range[0]);
+  main.setIndexEnd(range[1]);
+  ipcRenderer.send('requestPlotUpdate',-1);
 });
 
 // =============================================================================
@@ -36,7 +41,7 @@ function updateAnimationSlider(){
   if(main.getFileReadStatus()==true){
     slider.setAttribute('max', main.getNData());
     slider.enable();
-    slider.setValue(main.getIndexEnd());
+    slider.setValue([main.getIndexStart(),main.getIndexEnd()]);
   }else{
     slider.disable();
   }
