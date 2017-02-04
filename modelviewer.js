@@ -17,8 +17,8 @@ APP.canvas.appendChild(APP.renderer.domElement); // div領域にレンダラー�
 APP.renderer.autoClear = false; // 複数のシーンを重ねて表示する場合は、falseにする必要がある
 
 //カメラ
-APP.camera = new THREE.PerspectiveCamera( 35, APP.canvas.clientWidth/APP.canvas.clientHeight, 1, 10000 );
-APP.camera.position.set(-700,300,-300);
+APP.camera = new THREE.PerspectiveCamera( 35, APP.canvas.clientWidth/APP.canvas.clientHeight, 0.1, 1000 );
+APP.camera.position.set(-2,1,-1.7);
 APP.camera.up.set(0,0,-1);
 APP.camera.rotation.order = "ZYX";
 //APP.camera.up.z = -1;
@@ -35,28 +35,27 @@ APP.scene.add( APP.directionalLight );
 APP.drone = new THREE.Mesh();
 var loader = new THREE.JSONLoader();
 loader.load( './models/drone.json', function (geometry, materials){
-       //第１引数(geometry)はジオメトリー、第２引数(materials)はマテリアルが自動的に取得される
+  //第１引数(geometry)はジオメトリー、第２引数(materials)はマテリアルが自動的に取得される
 
-       var faceMaterial  = new THREE.MeshNormalMaterial();//法線マップにする（簡単に立体的に見せるため）
-       APP.drone = new THREE.Mesh( geometry, faceMaterial );
-       APP.drone.scale.set( 100, 100, 100 );
-       APP.drone.rotation.order = "ZYX";
+  var faceMaterial  = new THREE.MeshNormalMaterial();//法線マップにする（簡単に立体的に見せるため）
+  APP.drone = new THREE.Mesh( geometry, faceMaterial );
+  APP.drone.scale.set( 0.1, 0.1, 0.1 );
+  APP.drone.rotation.order = "ZYX";
 
-       // file specific rotation for adjustment
-       APP.drone.rotation.z += Math.PI/4;
-       APP.drone.rotation.x -= Math.PI/2;
+  // file specific rotation for adjustment
+  APP.drone.rotation.z += Math.PI/4;
+  APP.drone.rotation.x -= Math.PI/2;
 
-       APP.scene.add( APP.drone );
+  APP.scene.add( APP.drone );
 });
 
 //平面
-var planeGeometry = new THREE.PlaneGeometry( 1000, 1000, 10, 10 );//大きさ100*100,分割数1*1
+var planeGeometry = new THREE.PlaneGeometry( 10, 10, 100, 100 );//大きさ10*10,分割数10*100
 var planeMaterial = new THREE.MeshBasicMaterial( { color: 0x533E25, wireframe:true} );
 APP.planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
 APP.scene.add( APP.planeMesh );
 
 // Controlを用意
-//APP.controls = new THREE.TrackballControls( APP.camera, APP.canvas );
 APP.controls = new OrbitControls( APP.camera, APP.canvas );
 
 // AxisHelper on corner
@@ -101,6 +100,7 @@ $(window).resize(function() {
 // Update on slide
 APP.slider.on('slide', function(e) {
   setAttitude();
+
 });
 
 // =============================================================================
@@ -115,9 +115,6 @@ function animate() {
    requestAnimationFrame( animate ); //自身を呼ぶことで繰り返し更新される
 
    APP.controls.update();
-
-   // Set camera position
-   APP.camera.lookAt(APP.drone.position);
 
    // Render main viewport
    var width = APP.canvas.clientWidth;
@@ -146,12 +143,26 @@ function setAttitude(){
     var range = main.getIndexEnd()-main.getIndexStart();
     var index = main.getIndexStart()+Math.floor(0.01*percentage*range);
 
-    // Set drone position
+    // ドローンとカメラの相対位置を取得
+    var rel = {
+      'x': APP.camera.position.x - APP.drone.position.x,
+      'y': APP.camera.position.y - APP.drone.position.y,
+      'z': APP.camera.position.z - APP.drone.position.z,
+    }
+
+    // ドローンの位置と姿勢を更新
     var euler = main.getEuler(index);
     APP.drone.rotation.set(euler.roll,euler.pitch,euler.yaw);
     APP.drone.rotation.z += Math.PI/4; // file specific rotation for adjustment
     APP.drone.rotation.x -= Math.PI/2; // file specific rotation for adjustment
     var position = main.getPosition(index);
     APP.drone.position.set(position.x,position.y,position.z);
+
+    // カメラもドローンに追従させる
+    APP.camera.position.set(position.x+rel.x,position.y+rel.y,position.z+rel.z);
+
+    // OrbitControlsの中心をドローンに合わせる
+    APP.controls.target.set(APP.drone.position.x,APP.drone.position.y,APP.drone.position.z);
+
   }
 }

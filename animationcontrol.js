@@ -20,9 +20,7 @@ var slider = new Slider("#animationSlider",{
 // =============================================================================
 // Request plot update on slide
 slider.on('slideStop', function(e) {
-  //main.setIndexStart(Math.max(0,slider.getValue()-1350));
   var range = slider.getValue();
-  console.log(range);
   main.setIndexStart(range[0]);
   main.setIndexEnd(range[1]);
   ipcRenderer.send('requestPlotUpdate',-1);

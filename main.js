@@ -89,9 +89,9 @@ exports.getPosition = function(index){
      'z': 0
    };
   if(exports.getFileReadStatus()){
-    position.x = (global.sharedObject.longitude[index]-global.sharedObject.longitude[0])*111111*50;
-    position.y = (global.sharedObject.latitude[index]-global.sharedObject.latitude[0])*111111*50;
-    position.z = (global.sharedObject.barometricaltitude[index]-global.sharedObject.barometricaltitude[0])*(-50);
+    position.x = (global.sharedObject.longitude[index]-global.sharedObject.longitude[0])*111111;
+    position.y = (global.sharedObject.latitude[index]-global.sharedObject.latitude[0])*111111;
+    position.z = (global.sharedObject.barometricaltitude[index]-global.sharedObject.barometricaltitude[0])*(-1);
   }
   return position;
 }
