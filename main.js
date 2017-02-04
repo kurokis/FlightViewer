@@ -86,9 +86,9 @@ exports.setFileReadStatus = function(status){
 }
 
 exports.decode = function(filepath){
-  //const execFile = require('child_process').execFile;
+  var exePath = __dirname+'\\py\\dist\\decodeDJI';
   const execFile = require('child_process').execFileSync;
-  const child = execFile('./py/dist/decodeDJI',[filepath]);
+  const child = execFile(exePath,[filepath]);
 }
 
 // matrix transpose
