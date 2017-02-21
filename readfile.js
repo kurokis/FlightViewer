@@ -1,3 +1,4 @@
+// =============================================================================
 // ファイル読み込みを定義するスクリプト
 // 参考 http://programmer-jobs.blogspot.jp/2016/06/electron-file-open.html
 'use strict';
@@ -45,7 +46,7 @@ analyzeButton.addEventListener('click', function(){
 
   // disable the slider
   main.setFileReadStatus(false);
-  ipcRenderer.send('requestUpdateAnimationSlider',null);
+  ipcRenderer.send('requestUpdateSliderStates',null);
 
   // get file path
   var path = main.getPath(); // path to selected file
@@ -56,10 +57,13 @@ analyzeButton.addEventListener('click', function(){
     case "DJI":
       main.decode(path);
       path = dpath;
+      main.setPath(path); // _out.csvをファイルパスに設定
+      ipcRenderer.send('fireNavigationBarUpdate',null); // パス表示を更新
       break;
     default:
       break;
   }
+
 
   // Change button text
   analyzeButton.innerText = "Loading";
@@ -70,7 +74,7 @@ analyzeButton.addEventListener('click', function(){
   switch(main.getAircraftType()){
     case "DJI":
       columns = {
-        'Index': 'index',
+        'Index': 'frame',
         'Time (s)': 'time',
         'Latitude (deg)': 'latitude',
         'Longitude (deg)': 'longitude',
@@ -154,7 +158,7 @@ analyzeButton.addEventListener('click', function(){
   var accelerometerx_ = [], accelerometery_ = [], accelerometerz_ = [];
   var gyrox_ = [], gyroy_ = [], gyroz_ = [];
   var magnetometerx_ = [], magnetometery_ = [], magnetometerz_ = [];
-  var nData_ = 0;
+  var nframes_ = 0;
 
   // 読み込み途中の処理
   parser.on('readable', () => {
@@ -186,7 +190,7 @@ analyzeButton.addEventListener('click', function(){
         magnetometerx_.push(parseFloat(data.magnetometerx));
         magnetometery_.push(parseFloat(data.magnetometery));
         magnetometerz_.push(parseFloat(data.magnetometerz));
-        nData_=nData_+1;
+        nframes_=nframes_+1;
       }
     }
   });
@@ -216,8 +220,8 @@ analyzeButton.addEventListener('click', function(){
     remote.getGlobal('sharedObject').magnetometery = magnetometery_;
     remote.getGlobal('sharedObject').magnetometerz = magnetometerz_;
 
-    remote.getGlobal('sharedObject').nData = nData_;
-    remote.getGlobal('sharedObject').indexend = nData_;
+    remote.getGlobal('sharedObject').nframes = nframes_;
+    remote.getGlobal('sharedObject').frameend = nframes_-1;
 
 
     // Change button text
@@ -225,10 +229,10 @@ analyzeButton.addEventListener('click', function(){
 
     // enable the slider
     main.setFileReadStatus(true);
-    ipcRenderer.send('requestUpdateAnimationSlider',null);
+    ipcRenderer.send('fireSliderStatesUpdate',null);
 
     // update plots
-    ipcRenderer.send('requestPlotUpdate',null);
+    ipcRenderer.send('fireFrameRangeUpdate',null);
   });
 
 }, false);
@@ -250,7 +254,7 @@ $('#aircraftTypeUTSmallQuad').click(function(e){
 
 // =============================================================================
 // ipc handler
-ipcRenderer.on('updateNavigationBar', (event, arg) => {
+ipcRenderer.on('navigationBarUpdate', (event, arg) => {
   updateNavigationBar();
 })
 
@@ -274,6 +278,7 @@ function updateNavigationBar(){
   if(path == null){
     $('#fileName').text("(No file selected)")
   }else{
-    $('#fileName').text(path);
+    var filename=path.slice(path.lastIndexOf("\\")+1);
+    $('#fileName').text(filename);
   }
 }

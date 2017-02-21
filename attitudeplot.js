@@ -1,4 +1,5 @@
-// デモプロットを定義するスクリプト
+// =============================================================================
+// 姿勢表示(オイラー角)を定義するスクリプト
 'use strict';
 var $ = jQuery = require("./lib/jquery-3.1.1.min.js"); // jQuery
 var flot = require("./lib/jquery.flot.js"); // flot
@@ -61,7 +62,7 @@ $(window).resize(function() {
 
 // =============================================================================
 // ipc handler
-ipcRenderer.on('plotUpdate', (event, arg) => {
+ipcRenderer.on('frameRangeUpdate', (event, arg) => {
   plotData();
 })
 

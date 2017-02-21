@@ -87,20 +87,49 @@
 
               <!-- Navigation slider -->
               <ul class="nav navbar-top-links navbar-right">
-                <li><div id="animationSlider"></div></li>
-
+                <form id="frameForm" action="" style="display:inline">
+                  <li>
+                    Time (s):
+                    <input name="time" type="text" value="0" style="width:50px;" />
+                  </li>
+                  <li>
+                    Frame:
+                    <input name="frame" type="text" value="0" style="width:50px;" />
+                  </li>
+                </form>
+                <li style="margin-right:20px; margin-left:20px">
+                  <div id="frameSlider"></div>
+                </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                        Range &nbsp; <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                        </li>
+                      <li><a id="selectedRangeText">Data Range</a></li>
+                      <li style="margin-right:20px; margin-left:20px">
+                        <div id="frameRangeSlider"></div>
+                      </li>
+                      <li style="margin-right:20px; margin-left:20px">
+                        <form id="frameRangeForm" action="">
+                          <table border="0">
+                            <tr>
+                              <td></td>
+                              <td align="center">Time (s)</td>
+                              <td align="center">Frame</td>
+                            </tr>
+                            <tr>
+                              <td align="right"> start &nbsp; </td>
+                              <td><input name="timeStart" type="text" size="6" value="0"></td>
+                              <td><input name="frameStart" type="text" size="6" value="0"></td>
+                            </tr>
+                            <tr>
+                              <td align="right"> end &nbsp;</td>
+                              <td><input name="timeEnd" type="text" size="6" value="0"></td>
+                              <td><input name="frameEnd" type="text" size="6" value="0"></td>
+                            </tr>
+                          </table>
+                        </form>
+                      </li>
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>

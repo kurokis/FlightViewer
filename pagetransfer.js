@@ -1,3 +1,4 @@
+// =============================================================================
 // ページ遷移を定義するスクリプト
 'use strict';
 var $ = jQuery = require("./lib/jquery-3.1.1.min.js"); // jQuery
@@ -5,13 +6,16 @@ var Slider = require('bootstrap-slider') // bootstrap-slider (npm install bootst
 var {ipcRenderer, remote} = require('electron');
 const main = remote.require("./main");
 
-// Update navigation bar (readfile.js)
-ipcRenderer.send('requestUpdateNavigationBar')
+$(document).ready(function(){
+  // Update navigation bar (readfile.js)
+  ipcRenderer.send('fireNavigationBarUpdate')
 
-// Update animation slider (animationcontrol.js)
-ipcRenderer.send('requestUpdateAnimationSlider');
+  // Update sliders (animationcontrol.js)
+  ipcRenderer.send('fireSliderStatesUpdate');
 
-// Update plots (plotdemo.js, mapviewer.js)
-if(main.getFileReadStatus()==true){
-  ipcRenderer.send('requestPlotUpdate',null);
-}
+  // Update plots (mapviewer.js, altitudeplot.js, ...)
+  if(main.getFileReadStatus()==true){
+    ipcRenderer.send('fireFrameRangeUpdate',null);
+    ipcRenderer.send('fireFrameUpdate',null);
+  }
+});

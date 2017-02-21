@@ -31,41 +31,41 @@ app.on('ready', function() {
 
 //============================== Remote functions ==============================
 exports.getTime = function(){
-  return global.sharedObject.time.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
+  return global.sharedObject.time.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
 }
 
 exports.getLatLngs = function(){
-  var lat = global.sharedObject.latitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1)
-  var lon = global.sharedObject.longitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1)
+  var lat = global.sharedObject.latitude.slice(global.sharedObject.framestart,global.sharedObject.framecurrent+1)
+  var lon = global.sharedObject.longitude.slice(global.sharedObject.framestart,global.sharedObject.framecurrent+1)
   var latlon = exports.transpose([lat,lon]);
   return latlon;
 }
 
 exports.getPositionXY = function(){
-  var lat = global.sharedObject.latitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1)
-  var lon = global.sharedObject.longitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1)
+  var lat = global.sharedObject.latitude.slice(global.sharedObject.framestart,global.sharedObject.frameend+1)
+  var lon = global.sharedObject.longitude.slice(global.sharedObject.framestart,global.sharedObject.frameend+1)
   var xy = exports.transpose([lon,lat]);
   return xy;
 }
 
 exports.getGPSAltitude = function(){
-  return global.sharedObject.gpsaltitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
+  return global.sharedObject.gpsaltitude.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
 }
 
 exports.getBarometricAltitude = function(){
-  return global.sharedObject.barometricaltitude.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
+  return global.sharedObject.barometricaltitude.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
 }
 
 exports.getRoll = function(){
-  return global.sharedObject.roll.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
+  return global.sharedObject.roll.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
 }
 
 exports.getPitch = function(){
-  return global.sharedObject.pitch.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
+  return global.sharedObject.pitch.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
 }
 
 exports.getYaw = function(){
-  return global.sharedObject.yaw.slice(global.sharedObject.indexstart,global.sharedObject.indexend+1);
+  return global.sharedObject.yaw.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
 }
 
 exports.getEuler = function(index){
@@ -96,16 +96,24 @@ exports.getPosition = function(index){
   return position;
 }
 
-exports.getNData = function(){
-  return global.sharedObject.nData;
+exports.getNFrames = function(){
+  return global.sharedObject.nframes;
 }
 
-exports.getIndexStart = function(){
-  return global.sharedObject.indexstart;
+exports.getFrameStart = function(){
+  return global.sharedObject.framestart;
 }
 
-exports.getIndexEnd = function(){
-  return global.sharedObject.indexend;
+exports.getFrameCurrent = function(){
+  return global.sharedObject.framecurrent;
+}
+
+exports.getFrameEnd = function(){
+  return global.sharedObject.frameend;
+}
+
+exports.getTimeFromFrame = function(f){
+  return Math.round(global.sharedObject.time[f]*100)/100;
 }
 
 exports.getAircraftType = function(){
@@ -120,12 +128,16 @@ exports.getFileReadStatus = function(){
   return global.sharedObject.filereadstatus;
 }
 
-exports.setIndexStart = function(indexstart){
-  global.sharedObject.indexstart = indexstart;
+exports.setFrameStart = function(framestart){
+  global.sharedObject.framestart = framestart;
 }
 
-exports.setIndexEnd = function(indexend){
-  global.sharedObject.indexend = indexend;
+exports.setFrameEnd = function(frameend){
+  global.sharedObject.frameend = frameend;
+}
+
+exports.setFrameCurrent = function(framecurrent){
+  global.sharedObject.framecurrent = framecurrent;
 }
 
 exports.setAircraftType = function(aircrafttype){
@@ -156,19 +168,24 @@ exports.transpose = function(matrix){
 // http://electron.atom.io/docs/api/ipc-main/
 // http://electron.rocks/different-ways-to-communicate-between-main-and-renderer-process/
 
-// Fire 'plotUpdate' event upon request
-ipcMain.on('requestPlotUpdate', (event, arg) => {
-  event.sender.send('plotUpdate', 'pong') // plotdemo.js, mapviewer.js
+// 表示するフレームの範囲が変わったときのイベント
+ipcMain.on('fireFrameRangeUpdate', (event, arg) => { // animationcontrol.js
+  event.sender.send('frameRangeUpdate', null) // altitudeplot.js, attitudeplot.js, modelviewer.js, positionxyplot.js
 })
 
-// Fire 'updateAnimationSlider' event upon request
-ipcMain.on('requestUpdateAnimationSlider', (event, arg) => {
-  event.sender.send('updateAnimationSlider', null) // animationcontrol.js
+// 表示するフレームが変わったときのイベント
+ipcMain.on('fireFrameUpdate', (event, arg) => { // animationcontrol.js
+  event.sender.send('frameUpdate', null) // mapviewer.js
 })
 
-// Fire 'updateNavigationBar' event upon request
-ipcMain.on('requestUpdateNavigationBar', (event, arg) => {
-  event.sender.send('updateNavigationBar', null) // readfile.js
+// 要求に応じスライダーの状態を更新
+ipcMain.on('fireSliderStatesUpdate', (event, arg) => { // readfile.js, pagetransfer.js
+  event.sender.send('sliderStatesUpdate', null) // animationcontrol.js
+})
+
+// 要求に応じナビゲーションバーを更新
+ipcMain.on('fireNavigationBarUpdate', (event, arg) => { // pagetransfer.js
+  event.sender.send('navigationBarUpdate', null) // readfile.js
 })
 
 //============================= Global variables ===============================
@@ -197,9 +214,10 @@ global.sharedObject = {
   magnetometerx: null,
   magnetometery: null,
   magnetometerz: null,
-  nData: 0,
-  indexstart: 0,
-  indexend: 0,
+  nframes: 0,
+  framestart: 0,
+  framecurrent: 0,
+  frameend: 0,
   aircrafttype: null,
   path: null,
   filereadstatus: false

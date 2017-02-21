@@ -1,3 +1,4 @@
+// =============================================================================
 // OpenStreetMapの2次元地図を定義するスクリプト
 'use strict';
 var leaflet = require('leaflet') // bootstrap-slider (npm install bootstrap-slider)
@@ -16,7 +17,7 @@ var latlngs = [[]];
 var polyline = L.polyline(latlngs, {color: 'red'}).addTo(mymap);
 
 // Plot data on 'plotUpdate' event
-ipcRenderer.on('plotUpdate', (event, arg) => {
+ipcRenderer.on('frameUpdate', (event, arg) => {
   // create a red polyline from an array of LatLng points
   //var latlngs = main.getLatLngs();
   //var polyline = L.polyline(latlngs, {color: 'red'}).addTo(mymap);
