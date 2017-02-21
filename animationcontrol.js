@@ -70,8 +70,8 @@ frameRangeSlider.on('slide', function(e){
   var range = frameRangeSlider.getValue();
   frameRangeForm.frameStart.value = range[0];
   frameRangeForm.frameEnd.value = range[1];
-  frameRangeForm.timeStart.value = main.getTimeFromFrame(range[0]);
-  frameRangeForm.timeEnd.value = main.getTimeFromFrame(range[1]);
+  frameRangeForm.timeStart.value = main.getTime(range[0]);
+  frameRangeForm.timeEnd.value = main.getTime(range[1]);
 });
 
 // フレーム範囲スライダーが動き終わったときの処理
@@ -138,8 +138,8 @@ function updateSliderStates(){
 
     frameRangeForm.frameStart.value = main.getFrameStart();
     frameRangeForm.frameEnd.value = main.getFrameEnd();
-    frameRangeForm.timeStart.value = main.getTimeFromFrame(main.getFrameStart());
-    frameRangeForm.timeEnd.value = main.getTimeFromFrame(main.getFrameEnd());
+    frameRangeForm.timeStart.value = main.getTime(main.getFrameStart());
+    frameRangeForm.timeEnd.value = main.getTime(main.getFrameEnd());
 
     frameSlider.setAttribute('min', main.getFrameStart());
     frameSlider.setAttribute('max', main.getFrameEnd());
@@ -147,7 +147,7 @@ function updateSliderStates(){
     frameSlider.setValue(main.getFrameCurrent());
 
     frameForm.frame.value = main.getFrameCurrent();
-    frameForm.time.value = main.getTimeFromFrame(main.getFrameCurrent());
+    frameForm.time.value = main.getTime(main.getFrameCurrent());
   }else{
     frameRangeSlider.disable();
     frameSlider.disable();
@@ -165,7 +165,7 @@ function updateFrameSlider(){
     // 連動：スライダー ==> テキストボックス(frame)、テキストボックス(time)
     var frame = frameSlider.getValue();
     frameForm.frame.value = frame;
-    frameForm.time.value = main.getTimeFromFrame(frame);
+    frameForm.time.value = main.getTime(frame);
   }else if(frameChangeFlag == "frameForm.frame"){
     // 数字かどうかをチェックし、数字でなかったら以前の値に戻す
     if(!isNumeric(frameForm.frame.value)){
@@ -180,11 +180,11 @@ function updateFrameSlider(){
 
     // 連動：テキストボックス(frame) ==> スライダー、テキストボックス(time)
     frameSlider.setValue(frame);
-    frameForm.time.value = main.getTimeFromFrame(frame);
+    frameForm.time.value = main.getTime(frame);
   }else if(frameChangeFlag == "frameForm.time"){
     // 数字かどうかをチェックし、数字でなかったら以前の値に戻す
     if(!isNumeric(frameForm.time.value)){
-      frameForm.time.value = main.getTimeFromFrame(main.getFrameCurrent());
+      frameForm.time.value = main.getTime(main.getFrameCurrent());
     }
 
     // 数字の整合性をチェックし、適切な値に直す
@@ -192,7 +192,7 @@ function updateFrameSlider(){
     var time = parseFloat(frameForm.time.value);
     var frame = 0, nframes = main.getNFrames();
     while(frame < nframes-1){
-      if(main.getTimeFromFrame(frame)>=time){
+      if(main.getTime(frame)>=time){
         break;
       }
       frame = frame + 1;
@@ -202,7 +202,7 @@ function updateFrameSlider(){
 
     // 連動：テキストボックス(time) ==> スライダー、テキストボックス(time)、テキストボックス(time)
     frameSlider.setValue(frame);
-    frameForm.time.value = main.getTimeFromFrame(frame);
+    frameForm.time.value = main.getTime(frame);
     frameForm.frame.value = frame;
   }else if(frameChangeFlag == "frameRangeSlider"){
     // フレーム範囲に収まるようフレームを変更
@@ -216,7 +216,7 @@ function updateFrameSlider(){
     frameSlider.setValue(frame);
 
     frameForm.frame.value = frame;
-    frameForm.time.value = main.getTimeFromFrame(frame);
+    frameForm.time.value = main.getTime(frame);
   }else{
     console.log("pass");
   }
@@ -237,8 +237,8 @@ function updateFrameRangeSlider(){
     var range = frameRangeSlider.getValue();
     frameRangeForm.frameStart.value = range[0];
     frameRangeForm.frameEnd.value = range[1];
-    frameRangeForm.timeStart.value = main.getTimeFromFrame(range[0]);
-    frameRangeForm.timeEnd.value = main.getTimeFromFrame(range[1]);
+    frameRangeForm.timeStart.value = main.getTime(range[0]);
+    frameRangeForm.timeEnd.value = main.getTime(range[1]);
   }else if(frameRangeChangeFlag == "frameRangeForm.frame"){
     // 数字かどうかをチェックし、数字でなかったら以前の値に戻す
     if(!isNumeric(frameRangeForm.frameStart.value)){
@@ -258,16 +258,16 @@ function updateFrameRangeSlider(){
     frameRangeForm.frameEnd.value = fend;
 
     // 連動：テキストボックス ==> スライダー
-    frameRangeForm.timeStart.value = main.getTimeFromFrame(fstart);
-    frameRangeForm.timeEnd.value = main.getTimeFromFrame(fend);
+    frameRangeForm.timeStart.value = main.getTime(fstart);
+    frameRangeForm.timeEnd.value = main.getTime(fend);
     frameRangeSlider.setValue([parseFloat(frameRangeForm.frameStart.value), parseFloat(frameRangeForm.frameEnd.value)]);
   }else if(frameRangeChangeFlag == "frameRangeForm.time"){
     // 数字かどうかをチェックし、数字でなかったら以前の値に戻す
     if(!isNumeric(frameRangeForm.timeStart.value)){
-      frameRangeForm.timeStart.value = main.getTimeFromFrame(main.getFrameStart());
+      frameRangeForm.timeStart.value = main.getTime(main.getFrameStart());
     }
     if(!isNumeric(frameRangeForm.timeEnd.value)){
-      frameRangeForm.timeEnd.value = main.getTimeFromFrame(main.getFrameEnd());
+      frameRangeForm.timeEnd.value = main.getTime(main.getFrameEnd());
     }
 
     // 数字の整合性をチェックし、適切な値に直す
@@ -276,13 +276,13 @@ function updateFrameRangeSlider(){
     var tend = parseFloat(frameRangeForm.timeEnd.value);
     var fstart = 0, fend = 0, nframes = main.getNFrames();
     while(fstart < nframes-1){
-      if(main.getTimeFromFrame(fstart)>=tstart){
+      if(main.getTime(fstart)>=tstart){
         break;
       }
       fstart = fstart + 1;
     }
     while(fend < nframes-1){
-      if(main.getTimeFromFrame(fend)>=tend){
+      if(main.getTime(fend)>=tend){
         break;
       }
       fend = fend + 1;
@@ -290,8 +290,8 @@ function updateFrameRangeSlider(){
     if(fstart<0){fstart = 0;}
     if(fend>main.getNFrames()-1){fend = main.getNFrames()-1;}
     if(fstart>fend){fstart=fend;}
-    frameRangeForm.timeStart.value = main.getTimeFromFrame(fstart);
-    frameRangeForm.timeEnd.value = main.getTimeFromFrame(fend);
+    frameRangeForm.timeStart.value = main.getTime(fstart);
+    frameRangeForm.timeEnd.value = main.getTime(fend);
 
     // 連動：テキストボックス ==> スライダー
     frameRangeForm.frameStart.value = fstart;

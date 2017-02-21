@@ -30,42 +30,74 @@ app.on('ready', function() {
 });
 
 //============================== Remote functions ==============================
-exports.getTime = function(){
+exports.getTime = function(frame){
+  return Math.round(global.sharedObject.time[frame]*100)/100;
+}
+
+exports.getTimeSeries = function(){
   return global.sharedObject.time.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
 }
 
-exports.getLatLngs = function(){
+exports.getLatLng = function(frame){
+  var latlng = {
+     'latitude': 0,
+     'longitude': 0
+   };
+  if(exports.getFileReadStatus()){
+    latlng.latitude = global.sharedObject.latitude[frame];
+    latlng.longitude = global.sharedObject.longitude[frame];
+  }
+  return latlng;
+}
+
+exports.getLatLngSeries = function(){
   var lat = global.sharedObject.latitude.slice(global.sharedObject.framestart,global.sharedObject.framecurrent+1)
   var lon = global.sharedObject.longitude.slice(global.sharedObject.framestart,global.sharedObject.framecurrent+1)
-  var latlon = exports.transpose([lat,lon]);
-  return latlon;
+  return exports.transpose([lat,lon]);
 }
 
 exports.getPositionXY = function(){
   var lat = global.sharedObject.latitude.slice(global.sharedObject.framestart,global.sharedObject.frameend+1)
   var lon = global.sharedObject.longitude.slice(global.sharedObject.framestart,global.sharedObject.frameend+1)
-  var xy = exports.transpose([lon,lat]);
-  return xy;
+  return exports.transpose([lon,lat]);
 }
 
-exports.getGPSAltitude = function(){
-  return global.sharedObject.gpsaltitude.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+exports.getGPSAltitude = function(frame){
+  return global.sharedObject.gpsaltitude[frame];
 }
 
-exports.getBarometricAltitude = function(){
-  return global.sharedObject.barometricaltitude.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+exports.getGPSAltitudeSeries = function(){
+  var t = global.sharedObject.time.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+  var x = global.sharedObject.gpsaltitude.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+  return exports.transpose([t,x]);
 }
 
-exports.getRoll = function(){
-  return global.sharedObject.roll.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+exports.getBarometricAltitude = function(frame){
+  return global.sharedObject.barometricaltitude[frame];
 }
 
-exports.getPitch = function(){
-  return global.sharedObject.pitch.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+exports.getBarometricAltitudeSeries = function(){
+  var t = global.sharedObject.time.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+  var x = global.sharedObject.barometricaltitude.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+  return exports.transpose([t,x]);
 }
 
-exports.getYaw = function(){
-  return global.sharedObject.yaw.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+exports.getRollSeries = function(){
+  var t = global.sharedObject.time.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+  var x = global.sharedObject.roll.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+  return exports.transpose([t,x]);
+}
+
+exports.getPitchSeries = function(){
+  var t = global.sharedObject.time.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+  var x = global.sharedObject.pitch.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+  return exports.transpose([t,x]);
+}
+
+exports.getYawSeries = function(){
+  var t = global.sharedObject.time.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+  var x = global.sharedObject.yaw.slice(global.sharedObject.framestart,global.sharedObject.frameend+1);
+  return exports.transpose([t,x]);
 }
 
 exports.getEuler = function(index){
@@ -110,10 +142,6 @@ exports.getFrameCurrent = function(){
 
 exports.getFrameEnd = function(){
   return global.sharedObject.frameend;
-}
-
-exports.getTimeFromFrame = function(f){
-  return Math.round(global.sharedObject.time[f]*100)/100;
 }
 
 exports.getAircraftType = function(){

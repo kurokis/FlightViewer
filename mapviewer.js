@@ -21,7 +21,7 @@ ipcRenderer.on('frameUpdate', (event, arg) => {
   // create a red polyline from an array of LatLng points
   //var latlngs = main.getLatLngs();
   //var polyline = L.polyline(latlngs, {color: 'red'}).addTo(mymap);
-  latlngs = main.getLatLngs();
+  latlngs = main.getLatLngSeries();
   polyline.setLatLngs(latlngs);
   polyline.redraw();
 

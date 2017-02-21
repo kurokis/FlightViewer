@@ -26,7 +26,7 @@ $.each(datasets, function(key, val) {
 	++i;
 });
 
-// insert checkboxes
+// チェックボックスをページに挿入し、クリックされたらグラフを更新
 var choiceContainer = $(choiceContainerID);
 $.each(datasets, function(key, val) {
   choiceContainer.append("<input type='checkbox' name='" + key +
@@ -34,17 +34,44 @@ $.each(datasets, function(key, val) {
     "<label for='id" + key + "'>"
     + val.label + "</label>");
 });
+choiceContainer.find("input").click(plotData);
 
+// ホバー時に値が表示されるようにする
+var time = []; // ホバー時に利用する
+$("<div id='tooltipPositionXY'></div>").css({
+	position: "absolute",
+	display: "none",
+	border: "1px solid #fdd",
+	padding: "2px",
+	"background-color": "#fee",
+	opacity: 0.80
+}).appendTo("body");
+$(placeholderID).bind("plothover", function (event, pos, item) {
+  if (item) {
+    var i = item.dataIndex;
+		$("#tooltipPositionXY").html(item.series.label+ " at t = " + (time[i]).toFixed(2) + " s")
+			.css({top: item.pageY+5, left: item.pageX+5})
+			.fadeIn(200);
+	} else {
+		$("#tooltipPositionXY").hide();
+	}
+})
+
+// プロットを作成
 var data = [];
 var options = {
   series: {
       lines: { show: true },
-      points: { show: false }
+      points: { show: false },
+      shadowSize: 0 // Drawing is faster without shadows
+  },
+  grid: {
+    hoverable: true,
   }
 };
 var plot = $.plot(placeholderID,data,options);
 
-choiceContainer.find("input").click(plotData);
+
 
 // =============================================================================
 // Change dimension on resize
@@ -55,7 +82,19 @@ $(window).resize(function() {
 // =============================================================================
 // ipc handler
 ipcRenderer.on('frameRangeUpdate', (event, arg) => {
+  time = main.getTimeSeries();
   plotData();
+})
+
+// ipc handler
+ipcRenderer.on('frameUpdate', (event, arg) => {
+
+  var latlng = main.getLatLng(main.getFrameCurrent());
+  var str = " Latitude:" + (latlng.latitude).toFixed(8) + " deg, ";
+  str += " Longitude:" + (latlng.longitude).toFixed(7) + " deg";
+  $('#positionxyText').text(str);
+
+  //plot.draw();
 })
 
 // =============================================================================
