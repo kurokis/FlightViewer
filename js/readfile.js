@@ -56,11 +56,10 @@ analyzeButton.addEventListener('click', function(){
   switch(main.getAircraftType()){
     case "DJI":
       main.decode(path);
-      path = dpath;
-      main.setPath(path); // _out.csvをファイルパスに設定
       ipcRenderer.send('fireNavigationBarUpdate',null); // パス表示を更新
       break;
     default:
+      dpath = path;
       break;
   }
 
@@ -148,7 +147,7 @@ analyzeButton.addEventListener('click', function(){
 
   // パーサを作成
   const parser = csv.parse({columns : parseColumns});
-  const readableStream = fs.createReadStream(path, {encoding: 'utf-8'});
+  const readableStream = fs.createReadStream(dpath, {encoding: 'utf-8'});
   readableStream.pipe(parser);
 
   // ローカル変数

@@ -21,7 +21,7 @@ app.on('ready', function() {
   mainWindow.loadURL('file://' + __dirname + '/index.html');
 
   // Open developer tools for debug
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   // ウィンドウが閉じられたらアプリも終了
   mainWindow.on('closed', function() {
@@ -154,6 +154,10 @@ exports.getPath = function(){
 
 exports.getFileReadStatus = function(){
   return global.sharedObject.filereadstatus;
+}
+
+exports.getHeading = function(frame){
+  return global.sharedObject.yaw[frame]; // yaw and heading should be distingushed in the future
 }
 
 exports.setFrameStart = function(framestart){
