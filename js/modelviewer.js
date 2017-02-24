@@ -58,7 +58,7 @@ APP.scene.add( APP.planeMesh );
 APP.controls = new THREE.OrbitControls( APP.camera, APP.canvas );
 
 // AxisHelperを追加
-APP.axisHelper = new THREE.AxisHelper( 0.5 );
+APP.axisHelper = new THREE.AxisHelper( 0.3 );
 APP.axisHelper.rotation.order = "ZYX";
 APP.scene.add( APP.axisHelper );
 
@@ -113,14 +113,14 @@ function setAttitude(){
     var euler = new THREE.Euler( e.roll,e.pitch,e.yaw, 'ZYX' );
     var position = main.getPosition(frame);
     APP.drone.setRotationFromEuler(euler);
-    APP.drone.position.set(position.x,position.y,position.z);
+    //APP.drone.position.set(position.x,position.y,position.z);
     APP.axisHelper.setRotationFromEuler(euler);
-    APP.axisHelper.position.set(position.x,position.y,position.z);
+    //APP.axisHelper.position.set(position.x,position.y,position.z);
 
     // カメラもドローンに追従させる
-    APP.camera.position.set(position.x+rel.x,position.y+rel.y,position.z+rel.z);
+    //APP.camera.position.set(position.x+rel.x,position.y+rel.y,position.z+rel.z);
 
     // OrbitControlsの中心をドローンに合わせる
-    APP.controls.target.set(APP.drone.position.x,APP.drone.position.y,APP.drone.position.z);
+    //APP.controls.target.set(APP.drone.position.x,APP.drone.position.y,APP.drone.position.z);
   }
 }

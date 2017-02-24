@@ -21,7 +21,7 @@ app.on('ready', function() {
   mainWindow.loadURL('file://' + __dirname + '/index.html');
 
   // Open developer tools for debug
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   // ウィンドウが閉じられたらアプリも終了
   mainWindow.on('closed', function() {

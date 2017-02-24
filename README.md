@@ -27,7 +27,7 @@
 
 インストールはNode.jsのインストール→Electronのインストールの順番になっている。ここではWindows 64-bitマシンでのインストール手順を示す。
 
-* Node.jsの最新の64ビット用msiをダウンロードし、インストール（https://nodejs.org/download/ → release/ → latest/ → node-v7.4.0-x64.msi）。Node.jsをインストールすることによりnpm(node package manger)が利用できるようになる。デフォルト設定で環境変数にnpmが追加されるはずである。
+* Node.jsの最新の64ビット用msiをダウンロードし、インストール（https://nodejs.org/download/ → release/ → latest/ → node-v7.4.0-x64.msi）。Node.jsをインストールすることによりnpm(node package manager)が利用できるようになる。デフォルト設定で環境変数にnpmが追加されるはずである。
 * Electronをインストール。コマンドプロンプトで次のコマンドを実行する。``npm –g install electron-prebuilt``
 * 配布可能なアプリを作るためにはアプリケーションのアーカイブ化とパッケージングを行う。そのためにはさらに以下をインストールする。
   * asar： ``npm install -g asar``
@@ -40,7 +40,7 @@ Gitが入っていない場合はhttps://github.com/kurokis/FlightViewer からz
 参考：http://qiita.com/nyanchu/items/15d514d9b9f87e5c0a29
 
 ## 実行手順
-例としてデスクトップにFlightViewerの場合の手順を示す。
+例としてデスクトップにFlightViewerをダウンロードした場合の手順を示す。
 
 * FlightViewerディレクトリに移動。例えばデスクトップにダウンロードした場合は、次のようにする（< User Name >はWindowsで使用しているユーザー名）。　``cd C:\Users\<User Name>\Desktop\FlightViewer``
 * Electronを実行。 ``electron ./``
@@ -79,7 +79,7 @@ FlightViewerを配布可能なアプリとしてビルドする方法を説明�
 
 | ファイル | 機能 | 依存 |
 |:--------|:-----|:----|
-| py/decodeDJI.py | DJIのログファイルを解析プログラム。ビューワですぐに読み込めるファイルを出力する（例：logdji.csv→logdji_out.csv）。将来的にはこのファイルでカルマンフィルタや異常検知を実行する。 | numpy, pandas|
+| py/decodeDJI.py | DJIのログファイルの解析プログラム。ビューワですぐに読み込めるファイルを出力する（例：logdji.csv→logdji_out.csv）。将来的にはこのファイルでカルマンフィルタや異常検知を実行する。 | numpy, pandas|
 | py/dist/decodeDJI.exe | 実際には上記pythonファイルではなくこのexeファイルを実行している。これはdecodeDJI.pyをPyinstallerによりexe化したもの。|-|
 
 #### 外部ライブラリ（単体）

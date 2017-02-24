@@ -233,6 +233,7 @@ analyzeButton.addEventListener('click', function(){
 
     // update plots
     ipcRenderer.send('fireFrameRangeUpdate',null);
+    ipcRenderer.send('fireFrameUpdate',null);
   });
 
 }, false);
