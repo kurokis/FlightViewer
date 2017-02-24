@@ -1,27 +1,19 @@
 // =============================================================================
-// 姿勢表示(オイラー角)を定義するスクリプト
+// 緯度経度表示を定義するスクリプト
 'use strict';
-var $ = jQuery = require("./lib/jquery-3.1.1.min.js"); // jQuery
-var flot = require("./lib/jquery.flot.js"); // flot
+var $ = jQuery = require("../lib/jquery-3.1.1.min.js"); // jQuery
+var flot = require("../lib/jquery.flot.js"); // flot
 var {ipcRenderer, remote} = require('electron');
 const main = remote.require("./main");
 
 // Placeholder ID with #
-var placeholderID = '#attitudePlot';
-var choiceContainerID = '#attitudePlotChoices';
+var placeholderID = '#positionXYPlot';
+var choiceContainerID = '#positionXYPlotChoices';
 
 // Plot options
 var datasets = {
-  "roll": {
-    label: "Roll",
-    data: []
-  },
-  "pitch": {
-    label: "Pitch",
-    data: []
-  },
-  "yaw": {
-    label: "Yaw",
+  "gps": {
+    label: "GPS",
     data: []
   }
 }
@@ -45,7 +37,8 @@ $.each(datasets, function(key, val) {
 choiceContainer.find("input").click(plotData);
 
 // ホバー時に値が表示されるようにする
-$("<div id='tooltipAttitude'></div>").css({
+var time = []; // ホバー時に利用する
+$("<div id='tooltipPositionXY'></div>").css({
 	position: "absolute",
 	display: "none",
 	border: "1px solid #fdd",
@@ -55,14 +48,12 @@ $("<div id='tooltipAttitude'></div>").css({
 }).appendTo("body");
 $(placeholderID).bind("plothover", function (event, pos, item) {
   if (item) {
-		var x = item.datapoint[0].toFixed(2),
-			  y = item.datapoint[1].toFixed(2);
-
-		$("#tooltipAttitude").html(item.series.label + " = " + y + " at t = " + x)
+    var i = item.dataIndex;
+		$("#tooltipPositionXY").html(item.series.label+ " at t = " + (time[i]).toFixed(2) + " s")
 			.css({top: item.pageY+5, left: item.pageX+5})
 			.fadeIn(200);
 	} else {
-		$("#tooltipAttitude").hide();
+		$("#tooltipPositionXY").hide();
 	}
 })
 
@@ -80,6 +71,8 @@ var options = {
 };
 var plot = $.plot(placeholderID,data,options);
 
+
+
 // =============================================================================
 // Change dimension on resize
 $(window).resize(function() {
@@ -89,47 +82,37 @@ $(window).resize(function() {
 // =============================================================================
 // ipc handler
 ipcRenderer.on('frameRangeUpdate', (event, arg) => {
+  time = main.getTimeSeries();
   plotData();
 })
 
 // ipc handler
 ipcRenderer.on('frameUpdate', (event, arg) => {
-  // 現在時刻を示す垂直線を引く
-  var xVertical = main.getTime(main.getFrameCurrent());
-  var markings = [
-			{ color: "#ff0000", lineWidth: 1, xaxis: { from: xVertical, to: xVertical } },
-		];
-  plot.getOptions().grid.markings = markings;
 
-  var euler = main.getEuler(main.getFrameCurrent());
-  var str = " Roll:" + (euler.roll*180/Math.PI).toFixed(2) + " deg, ";
-  str += " Pitch:" + (euler.pitch*180/Math.PI).toFixed(2) + " deg, ";
-  str += " Yaw:" + (euler.yaw*180/Math.PI).toFixed(2) + " deg";
-  $('#attitudeText').text(str);
+  var latlng = main.getLatLng(main.getFrameCurrent());
+  var str = " Latitude:" + (latlng.latitude).toFixed(8) + " deg, ";
+  str += " Longitude:" + (latlng.longitude).toFixed(7) + " deg";
+  $('#positionxyText').text(str);
 
-  plot.draw();
+  //plot.draw();
 })
 
 // =============================================================================
 // Plot update
 function plotData(){
-  if(main.getFileReadStatus()){ // If file read is complete
-    // Update datasets
-    datasets['roll'].data = main.getRollSeries();
-    datasets['pitch'].data = main.getPitchSeries();
-    datasets['yaw'].data = main.getYawSeries();
+  // Update datasets
+  datasets['gps'].data = main.getPositionXY();
 
-  	data = [];
-  	choiceContainer.find("input:checked").each(function () {
-  		var key = $(this).attr("name");
-  		if (key && datasets[key]) {
-  			data.push(datasets[key]);
-  		}
-  	});
+	data = [];
+	choiceContainer.find("input:checked").each(function () {
+		var key = $(this).attr("name");
+		if (key && datasets[key]) {
+			data.push(datasets[key]);
+		}
+	});
 
-    plot.setData(data);
-    refresh();
-  }
+  plot.setData(data);
+  refresh();
 }
 
 // =============================================================================

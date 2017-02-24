@@ -143,31 +143,17 @@
           <div class="navbar-default sidebar" role="navigation">
               <div class="sidebar-nav navbar-collapse">
                   <ul class="nav" id="side-menu">
-                      <li class="sidebar-search">
-                          <div class="input-group custom-search-form">
-                              <input type="text" class="form-control" placeholder="Search...">
-                              <span class="input-group-btn">
-                              <button class="btn btn-default" type="button">
-                                  <i class="fa fa-search"></i>
-                              </button>
-                          </span>
-                          </div>
-                          <!-- /input-group -->
-                      </li>
                       <li>
                           <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                       </li>
                       <li>
-                          <a href="map.html">Map</a>
+                          <a href="map.html"><i class="fa fa-map-marker fa-fw"></i>2D Map</a>
                       </li>
                       <li>
-                          <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
-                          <ul class="nav nav-second-level">
-                              <li>
-                                  <a href="sensors.html">Sensors</a>
-                              </li>
-                          </ul>
-                          <!-- /.nav-second-level -->
+                          <a href="#"><i class="fa fa-map-marker fa-fw"></i>3D Map</a>
+                      </li>
+                      <li>
+                          <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Sensors</a>
                       </li>
                   </ul>
               </div>
@@ -256,9 +242,9 @@
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <!-- <script src="./SBAdmin/vendor/jquery/jquery.min.js"></script> -->
     <script src="./lib/jquery-3.1.1.min.js"></script>
 
+    <!-- This needs to be inserted after jQuery to enble jQuery in Electron -->
     <script src="./lib/jquery_after.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
@@ -274,13 +260,13 @@
     <script src="./lib/three.min.js"></script>
 
     <!-- My Javascript -->
-    <script>require('./pagetransfer.js')</script>
-    <script>require('./readfile.js')</script>
-    <script>require('./animationcontrol.js')</script>
-    <script>require('./modelviewer.js')</script>
-    <script>require('./attitudeplot.js')</script>
-    <script>require('./positionxyplot.js')</script>
-    <script>require('./altitudeplot.js')</script>
+    <script>require('./js/pagetransfer.js')</script>
+    <script>require('./js/readfile.js')</script>
+    <script>require('./js/animationcontrol.js')</script>
+    <script>require('./js/modelviewer.js')</script>
+    <script>require('./js/attitudeplot.js')</script>
+    <script>require('./js/positionxyplot.js')</script>
+    <script>require('./js/altitudeplot.js')</script>
 
 </body>
 

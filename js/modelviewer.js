@@ -1,9 +1,9 @@
 // =============================================================================
 'use strict';
-var $ = jQuery = require("./lib/jquery-3.1.1.min.js"); // jQuery
+var $ = jQuery = require("../lib/jquery-3.1.1.min.js"); // jQuery
 var {ipcRenderer, remote} = require('electron');
 const main = remote.require("./main");
-var OrbitControls = require('three-orbit-controls')(THREE)
+var OrbitControls = require('../lib/OrbitControls.js');
 
 var APP={ };
 
@@ -55,7 +55,7 @@ APP.planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
 APP.scene.add( APP.planeMesh );
 
 // Controlを用意
-APP.controls = new OrbitControls( APP.camera, APP.canvas );
+APP.controls = new THREE.OrbitControls( APP.camera, APP.canvas );
 
 // AxisHelperを追加
 APP.axisHelper = new THREE.AxisHelper( 0.5 );

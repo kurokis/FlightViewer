@@ -1,8 +1,8 @@
 // =============================================================================
 // 高度表示を定義するスクリプト
 'use strict';
-var $ = jQuery = require("./lib/jquery-3.1.1.min.js"); // jQuery
-var flot = require("./lib/jquery.flot.js"); // flot
+var $ = jQuery = require("../lib/jquery-3.1.1.min.js"); // jQuery
+var flot = require("../lib/jquery.flot.js"); // flot
 var {ipcRenderer, remote} = require('electron');
 const main = remote.require("./main");
 
