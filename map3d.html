@@ -36,8 +36,8 @@
     <!-- Bootstrap slider -->
     <link href="./node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet" type="text/css">
 
-    <!-- Leaflet -->
-    <link  href="./node_modules/leaflet/dist/leaflet.css"  rel="stylesheet" type="text/css"/>
+    <!-- Vizicities -->
+    <link  href="./lib/vizicities/vizicities.css"  rel="stylesheet" type="text/css"/>
 
 </head>
 
@@ -166,69 +166,24 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
+                    <h1 class="page-header">3D Map</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
 
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                      JSON Model Viewer
-                    </div>
-                    <div class="panel-body">
-                        <div id="modelviewer" style="height:200px;"></div>
-                    </div>
-                    <div class="panel-footer">
-                      <span>&nbsp;</span>
-                    </div>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="panel panel-default">
-                  <div class="panel-heading">
-                    <p style="display:inline"> Attitude </p>
-                    <p id="attitudePlotChoices" style="display:inline; float:right"></p>
-                  </div>
-                  <div class="panel-body">
-                    <div id="attitudePlot" style="height:200px;"></div>
-                  </div>
-                  <div class="panel-footer">
-                    <span id="attitudeText">&nbsp;</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- /.row -->
-
             <div class="row" >
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <div class="panel panel-default">
                   <div class="panel-heading">
-                    <p style="display:inline"> Position </p>
-                    <p id="positionXYPlotChoices" style="display:inline; float:right"></p>
+                    3D Map <span id="mapcontrol" style="float:right">&nbsp;</span>
                   </div>
                   <div class="panel-body">
-                    <div id="positionXYPlot" style="height:200px;"></div>
+                    <div id="world" style="height:600px"></div>
+                    <!-- <div id="openStreetMap" style="height:600px"></div> -->
                   </div>
                   <div class="panel-footer">
-                    <span id="positionxyText">&nbsp;</span>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="panel panel-default">
-                  <div class="panel-heading">
-                    <p style="display:inline"> Altitude </p>
-                    <p id="altitudePlotChoices" style="display:inline; float:right"></p>
-                  </div>
-                  <div class="panel-body">
-                    <div id="altitudePlot" style="height:200px;"></div>
-                  </div>
-                  <div class="panel-footer">
-                    <span id="altitudeText">&nbsp;</span>
+                    &nbsp;
                   </div>
                 </div>
               </div>
@@ -256,17 +211,16 @@
     <!-- Custom Theme JavaScript -->
     <script src="./SBAdmin/dist/js/sb-admin-2.js"></script>
 
-    <!-- Three.js -->
-    <script src="./lib/three.min.js"></script>
+    <!-- Vizicities -->
+    <script src="./lib/vizicities/three.min.js"></script>
+    <script src="./lib/vizicities/TweenMax.min.js"></script>
+    <script src="./lib/vizicities/vizicities.min.js"></script>
 
     <!-- My Javascript -->
     <script>require('./js/pagetransfer.js')</script>
     <script>require('./js/readfile.js')</script>
     <script>require('./js/animationcontrol.js')</script>
-    <script>require('./js/modelviewer.js')</script>
-    <script>require('./js/attitudeplot.js')</script>
-    <script>require('./js/positionxyplot.js')</script>
-    <script>require('./js/altitudeplot.js')</script>
+    <script>require('./js/mapviewer3d.js')</script>
 
 </body>
 
